@@ -9,7 +9,6 @@
 
 operation="$1"
 backup_dir="/Library/Application Support/Purge-NVDA/"
-general_guid="fa4ce28d-b62f-4c99-9cc3-6815686e30f9"
 final_message=""
 mkdir -p "$backup_dir"
 
@@ -22,7 +21,7 @@ invoke_kext_caching()
 update_nvram()
 {
     echo "Updating NVRAM..."
-    nvram "$general_guid":gpu-power-prefs=%01%00%00%00
+    nvram fa4ce28d-b62f-4c99-9cc3-6815686e30f9:gpu-power-prefs=%01%00%00%00
     final_message="Complete. iGPU will be preferred on boot if dGPU drivers are unavailable."
 }
 
