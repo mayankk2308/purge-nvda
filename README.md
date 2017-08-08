@@ -9,7 +9,7 @@ To activate the purge:
 sudo ./purge-nvda.sh
 ```
 
-Your mac will now behave like an iGPU-only device. If your next boot is successful, but there is no GPU acceleration (slow animations), rerun the script with the **nvram-only** option and reboot. If you are unable to boot into macOS, boot into recovery, launch **Terminal** and type in the following command:
+Your mac will now behave like an iGPU-only device. If you are unable to boot into macOS, boot into recovery, launch **Terminal** and type in the following command:
 ```bash
 sudo nvram fa4ce28d-b62f-4c99-9cc3-6815686e30f9:gpu-power-prefs=%01%00%00%00
 ```

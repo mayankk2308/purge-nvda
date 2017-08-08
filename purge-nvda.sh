@@ -5,7 +5,7 @@
 # sudo ./purge-nvda.sh -> moves NVDA kexts to prevent NVDA GPU activation
 # sudo ./purge-nvda.sh restore -> moves NVDA kexts back while keeping a backup - does not override newer versions.
 # sudo ./purge-nvda.sh nvram-only -> update only NVRAM
-# sudo ./purge-nvda.sh uninstall -> restores NVDA kexts and removes backup traces
+# sudo ./purge-nvda.sh uninstall -> restores NVDA kexts, resets NVRAM, and removes backup traces
 
 operation="$1"
 backup_dir="/Library/Application Support/Purge-NVDA/"
@@ -22,7 +22,7 @@ update_nvram()
 {
     echo "Updating NVRAM..."
     nvram fa4ce28d-b62f-4c99-9cc3-6815686e30f9:gpu-power-prefs=%01%00%00%00
-    final_message="Complete. iGPU will be preferred on boot if dGPU drivers are unavailable."
+    final_message="Complete. iGPU will be preferred on next boot if dGPU drivers are unavailable."
 }
 
 move_nvda_drv()
@@ -52,17 +52,23 @@ restore_nvda_drv()
 
 uninstall()
 {
+    nvram fa4ce28d-b62f-4c99-9cc3-6815686e30f9:gpu-power-prefs=%00%00%00%00
     if [[ "$(ls "$backup_dir")" ]]
     then
         restore_nvda_drv
         invoke_kext_caching
         echo "Uninstalling..."
         rm -r "$backup_dir"
-        nvram -c
         final_message="Uninstallation complete."
     else
-        final_message="Cannot uninstall - no installation found."
+        final_message="Cannot uninstall - could not find installation. NVRAM was reset."
     fi
+}
+
+initiate_reboot()
+{
+    echo "Rebooting..."
+    reboot
 }
 
 if [[ "$operation" == "" ]]
@@ -82,3 +88,4 @@ then
 fi
 
 echo "$final_message"
+initiate_reboot
