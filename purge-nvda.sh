@@ -27,7 +27,7 @@ update_nvram()
 
 move_nvda_drv()
 {
-    if [[ "$(ls /System/Library/Extensions/ | grep NVDA)" ]]
+    if [[ "$(ls /System/Library/Extensions/ | grep NVDA)" && "$(ls /System/Library/Extensions/ | grep GeForce)" ]]
     then
       echo "Moving NVIDIA drivers..."
       if [[ "$(ls "$backup_dir")" ]]
@@ -35,6 +35,7 @@ move_nvda_drv()
         rm -r "$backup_dir"*
       fi
       mv /System/Library/Extensions/NVDA*.kext "$backup_dir"
+      mv /System/Library/Extensions/GeForce*.* "$backup_dir"
       update_nvram
       final_message="Complete. Your mac will now behave as an iGPU-only device."
     else
@@ -57,6 +58,7 @@ uninstall()
         invoke_kext_caching
         echo "Uninstalling..."
         rm -r "$backup_dir"
+        nvram -c
         final_message="Uninstallation complete."
     else
         final_message="Cannot uninstall - no installation found."
