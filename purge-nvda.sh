@@ -8,20 +8,24 @@
 # sudo ./purge-nvda.sh uninstall -> restores NVDA kexts, resets NVRAM, and removes backup traces
 
 operation="$1"
+boot_volume=`system_profiler SPSoftwareDataType | grep Boot\ Volume | cut -c20-`
 backup_dir="/Library/Application Support/Purge-NVDA/"
 final_message=""
 mkdir -p "$backup_dir"
 
 invoke_kext_caching()
 {
-    echo "Invoke kext caching..."
+    echo "Rebuilding kext cache..."
     touch /System/Library/Extensions
+    kextcache -update-volume /Volumes/"$boot_volume"
 }
 
 update_nvram()
 {
     echo "Updating NVRAM..."
     nvram fa4ce28d-b62f-4c99-9cc3-6815686e30f9:gpu-power-prefs=%01%00%00%00
+    nvram fa4ce28d-b62f-4c99-9cc3-6815686e30f9:gpu-active=%01%00%00%00
+    nvram fa4ce28d-b62f-4c99-9cc3-6815686e30f9:gpu-policy=%01
     final_message="Complete. iGPU will be preferred on next boot if dGPU drivers are unavailable."
 }
 
@@ -52,6 +56,7 @@ restore_nvda_drv()
 
 uninstall()
 {
+    nvram -c
     nvram fa4ce28d-b62f-4c99-9cc3-6815686e30f9:gpu-power-prefs=%00%00%00%00
     if [[ "$(ls "$backup_dir")" ]]
     then
