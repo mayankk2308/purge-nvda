@@ -25,14 +25,14 @@ This option only copies back the relevant kexts it moved initially. Use the **un
 
 To update the **NVRAM** only:
 ```bash
-$ sudo ./purge-nvda nvram-only
+$ sudo ./purge-nvda.sh nvram-only
 ```
 
 This is useful for **iGPU-only** mode for the next boot only. Rebooting again will restore default behavior.
 
 To completely uninstall changes:
 ```bash
-$ sudo ./purge-nvda uninstall
+$ sudo ./purge-nvda.sh uninstall
 ```
 
 Uninstallation recommended before updating macOS.
