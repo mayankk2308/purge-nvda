@@ -12,6 +12,28 @@ backup_dir="/Library/Application Support/Purge-NVDA/"
 final_message=""
 mkdir -p "$backup_dir"
 
+usage()
+{
+    cat <<EOF
+    purge-nvda.sh moves NVDA kexts and updates NVRAM values to purge discrete NVIDIA chips.
+
+    Usage: ./purge-nvda.sh [param]
+
+    You can use one of the following parameters:
+
+    No arguments: Moves NVDA kexts, updates NVRAM, and reboots.
+
+    nvram-only: Just updates the NVRAM for iGPU-only mode and reboots.
+
+    restore: Moves backed up NVDA kexts to default location and reboots.
+
+    uninstall: Completely removes changes made by the script and reboots.
+
+    help: Displays usage information.
+
+EOF
+}
+
 invoke_kext_caching()
 {
     echo "Rebuilding kext cache..."
@@ -45,10 +67,8 @@ move_nvda_drv()
       mv /System/Library/Extensions/NVDA*.kext "$backup_dir"
       mv /System/Library/Extensions/GeForce*.* "$backup_dir"
       echo "Complete.\n"
-      update_nvram
-      final_message="Complete. Your mac will now behave as an iGPU-only device."
     else
-    final_message="Kexts already moved. No action required."
+    echo "Kexts already moved. No action required."
     fi
 }
 
@@ -85,6 +105,8 @@ initiate_reboot()
 if [[ "$operation" == "" ]]
 then
   move_nvda_drv
+  update_nvram
+  final_message="Complete. Your mac will now behave as an iGPU-only device."
   invoke_kext_caching
 elif [[ "$operation" == "restore" ]]
 then
@@ -96,6 +118,13 @@ then
 elif [[ "$operation" == "uninstall" ]]
 then
     uninstall
+elif [[ "$operation" == "help" ]]
+then
+    usage
+    exit
+else
+    echo "Invalid argument. Use the 'help' option for usage information."
+    exit
 fi
 
 echo "$final_message"
