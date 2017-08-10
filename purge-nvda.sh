@@ -3,12 +3,11 @@
 
 # Usage:
 # sudo ./purge-nvda.sh -> moves NVDA kexts to prevent NVDA GPU activation
-# sudo ./purge-nvda.sh restore -> moves NVDA kexts back while keeping a backup - does not override newer versions.
+# sudo ./purge-nvda.sh restore -> moves NVDA kexts back while keeping a backup - does not override newer versions
 # sudo ./purge-nvda.sh nvram-only -> update only NVRAM
 # sudo ./purge-nvda.sh uninstall -> restores NVDA kexts, resets NVRAM, and removes backup traces
 
 operation="$1"
-boot_volume=`system_profiler SPSoftwareDataType | grep Boot\ Volume | cut -c20-`
 backup_dir="/Library/Application Support/Purge-NVDA/"
 final_message=""
 mkdir -p "$backup_dir"
@@ -17,7 +16,11 @@ invoke_kext_caching()
 {
     echo "Rebuilding kext cache..."
     touch /System/Library/Extensions
-    kextcache -update-volume /Volumes/"$boot_volume"
+    kextcache -q -update-volume /
+    touch /System/Library/Extensions
+    kextcache -system-caches
+    kextcache -q -update-volume /
+    echo "Complete.\n"
 }
 
 update_nvram()
@@ -27,6 +30,7 @@ update_nvram()
     nvram fa4ce28d-b62f-4c99-9cc3-6815686e30f9:gpu-active=%01%00%00%00
     nvram fa4ce28d-b62f-4c99-9cc3-6815686e30f9:gpu-policy=%01
     final_message="Complete. iGPU will be preferred on next boot if dGPU drivers are unavailable."
+    echo "Complete.\n"
 }
 
 move_nvda_drv()
@@ -40,6 +44,7 @@ move_nvda_drv()
       fi
       mv /System/Library/Extensions/NVDA*.kext "$backup_dir"
       mv /System/Library/Extensions/GeForce*.* "$backup_dir"
+      echo "Complete.\n"
       update_nvram
       final_message="Complete. Your mac will now behave as an iGPU-only device."
     else
@@ -52,11 +57,11 @@ restore_nvda_drv()
     echo "Restoring NVIDIA drivers..."
     rsync -r -u "$backup_dir"* /System/Library/Extensions/
     final_message="Complete. Restart to reinstate default behavior."
+    echo "Complete.\n"
 }
 
 uninstall()
 {
-    nvram -c
     nvram fa4ce28d-b62f-4c99-9cc3-6815686e30f9:gpu-power-prefs=%00%00%00%00
     if [[ "$(ls "$backup_dir")" ]]
     then
@@ -73,6 +78,7 @@ uninstall()
 initiate_reboot()
 {
     echo "Rebooting..."
+    sleep 3
     reboot
 }
 

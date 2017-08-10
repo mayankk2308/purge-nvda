@@ -18,7 +18,7 @@ $ sudo nvram fa4ce28d-b62f-4c99-9cc3-6815686e30f9:gpu-policy=%01
 
 To restore drivers:
 ```bash
-sudo ./purge-nvda.sh restore
+$ sudo ./purge-nvda.sh restore
 ```
 
 This option only copies back the relevant kexts it moved initially. Use the **uninstall** option in general.
@@ -34,6 +34,8 @@ To completely uninstall changes:
 ```bash
 $ sudo ./purge-nvda uninstall
 ```
+
+Uninstallation recommended before updating macOS.
 
 ## License
 This project is available under the **MIT** license.
