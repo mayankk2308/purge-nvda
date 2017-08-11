@@ -39,9 +39,7 @@ invoke_kext_caching()
     echo "Rebuilding kext cache..."
     touch /System/Library/Extensions
     kextcache -q -update-volume /
-    touch /System/Library/Extensions
-    kextcache -system-caches
-    kextcache -q -update-volume /
+    # could sleep instead to avoid kextcache use
     echo "Complete.\n"
 }
 
@@ -50,7 +48,6 @@ update_nvram()
     echo "Updating NVRAM..."
     nvram fa4ce28d-b62f-4c99-9cc3-6815686e30f9:gpu-power-prefs=%01%00%00%00
     nvram fa4ce28d-b62f-4c99-9cc3-6815686e30f9:gpu-active=%01%00%00%00
-    nvram fa4ce28d-b62f-4c99-9cc3-6815686e30f9:gpu-policy=%01
     final_message="Complete. iGPU will be preferred on next boot if dGPU drivers are unavailable."
     echo "Complete.\n"
 }
@@ -82,7 +79,8 @@ restore_nvda_drv()
 
 uninstall()
 {
-    nvram fa4ce28d-b62f-4c99-9cc3-6815686e30f9:gpu-power-prefs=%00%00%00%00
+    nvram -d fa4ce28d-b62f-4c99-9cc3-6815686e30f9:gpu-power-prefs
+    nvram -d fa4ce28d-b62f-4c99-9cc3-6815686e30f9:gpu-active
     if [[ "$(ls "$backup_dir")" ]]
     then
         restore_nvda_drv
@@ -91,7 +89,7 @@ uninstall()
         rm -r "$backup_dir"
         final_message="Uninstallation complete."
     else
-        final_message="Cannot uninstall - could not find installation. NVRAM was reset."
+        final_message="Cannot uninstall - could not find installation. NVRAM was restored."
     fi
 }
 
