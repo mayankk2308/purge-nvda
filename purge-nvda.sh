@@ -10,7 +10,6 @@
 operation="$1"
 backup_dir="/Library/Application Support/Purge-NVDA/"
 final_message=""
-mkdir -p "$backup_dir"
 
 usage()
 {
@@ -21,11 +20,11 @@ usage()
 
     You can use one of the following parameters:
 
-    No arguments: Moves NVDA kexts, updates NVRAM, and reboots.
+    No arguments: Moves NVIDIA-associated kexts, updates NVRAM, and reboots.
 
-    nvram-only: Just updates the NVRAM for iGPU-only mode and reboots.
+    nvram-only: Updates the NVRAM for iGPU-only mode and reboots.
 
-    restore: Moves backed up NVDA kexts to default location and reboots.
+    nvram-restore: Restores the NVRAM to how it was before and reboots.
 
     uninstall: Completely removes changes made by the script and reboots.
 
@@ -52,8 +51,17 @@ update_nvram()
     echo "Complete.\n"
 }
 
+restore_nvram()
+{
+    echo "Restoring NVRAM..."
+    nvram -d fa4ce28d-b62f-4c99-9cc3-6815686e30f9:gpu-power-prefs
+    nvram -d fa4ce28d-b62f-4c99-9cc3-6815686e30f9:gpu-active
+    echo "Complete.\n"
+}
+
 move_nvda_drv()
 {
+    mkdir -p "$backup_dir"
     if [[ "$(ls /System/Library/Extensions/ | grep NVDA)" && "$(ls /System/Library/Extensions/ | grep GeForce)" ]]
     then
       echo "Moving NVIDIA drivers..."
@@ -79,8 +87,7 @@ restore_nvda_drv()
 
 uninstall()
 {
-    nvram -d fa4ce28d-b62f-4c99-9cc3-6815686e30f9:gpu-power-prefs
-    nvram -d fa4ce28d-b62f-4c99-9cc3-6815686e30f9:gpu-active
+    restore_nvram
     if [[ "$(ls "$backup_dir")" ]]
     then
         restore_nvda_drv
@@ -89,7 +96,7 @@ uninstall()
         rm -r "$backup_dir"
         final_message="Uninstallation complete."
     else
-        final_message="Cannot uninstall - could not find installation. NVRAM was restored."
+        final_message="Could not find valid installation. NVRAM was restored."
     fi
 }
 
@@ -102,17 +109,16 @@ initiate_reboot()
 
 if [[ "$operation" == "" ]]
 then
-  move_nvda_drv
-  update_nvram
-  final_message="Complete. Your mac will now behave as an iGPU-only device."
-  invoke_kext_caching
-elif [[ "$operation" == "restore" ]]
-then
-  restore_nvda_drv
-  invoke_kext_caching
+    move_nvda_drv
+    update_nvram
+    final_message="Complete. Your mac will now behave as an iGPU-only device."
+    invoke_kext_caching
 elif [[ "$operation" == "nvram-only" ]]
 then
-  update_nvram
+    update_nvram
+elif [[ "$operation" == "nvram-restore" ]]
+then
+    restore_nvram
 elif [[ "$operation" == "uninstall" ]]
 then
     uninstall
