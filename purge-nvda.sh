@@ -14,7 +14,7 @@ final_message=""
 usage()
 {
     cat <<EOF
-    purge-nvda.sh moves NVDA kexts and updates NVRAM values to purge discrete NVIDIA chips.
+    purge-nvda.sh moves NVDA kexts and updates NVRAM values to purge discrete NVIDIA chips. Please disable System Integrity Protection before proceeding.
 
     Usage: ./purge-nvda.sh [param]
 
@@ -46,7 +46,7 @@ update_nvram()
     echo "Updating NVRAM..."
     nvram fa4ce28d-b62f-4c99-9cc3-6815686e30f9:gpu-power-prefs=%01%00%00%00
     nvram fa4ce28d-b62f-4c99-9cc3-6815686e30f9:gpu-active=%01%00%00%00
-    final_message="Complete. iGPU will be preferred on next boot if dGPU drivers are unavailable."
+    final_message="iGPU will be preferred on next boot, and on subsequent boots if dGPU drivers are unavailable."
     echo "Complete.\n"
 }
 
@@ -80,7 +80,6 @@ restore_nvda_drv()
 {
     echo "Restoring NVIDIA drivers..."
     rsync -r -u "$backup_dir"* /System/Library/Extensions/
-    final_message="Complete. Restart to reinstate default behavior."
     echo "Complete.\n"
 }
 
@@ -110,7 +109,7 @@ if [[ "$operation" == "" ]]
 then
     move_nvda_drv
     update_nvram
-    final_message="Complete. Your mac will now behave as an iGPU-only device."
+    final_message="Your mac will now behave as an iGPU-only device."
     invoke_kext_caching
 elif [[ "$operation" == "nvram-only" ]]
 then

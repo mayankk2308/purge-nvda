@@ -1,8 +1,19 @@
 # Purge-NVDA
-A simple script for Macs that purges the activation of the discrete **NVIDIA** GPUs on **macOS**. This is confirmed to work on the **GeForce 750M 2GB** at the time of release. At the moment, this does not work with **High Sierra B5**, but showed promising results on **Beta 4**. This script is a **work-in-progress** for **High Sierra** support. Once functional on **HSierra**, this will enable **native external graphics support** which was previously not possible on **NVIDIA-based** macs.
+A simple script for Macs that purges the activation of the discrete **NVIDIA** GPUs on **macOS**. This script is a **work-in-progress** for **High Sierra** support - once functional, this will enable **native AMD external graphics support** which was previously not possible on **NVIDIA-based** macs.
+
+## Requirements
+This script is for use on **Macs** with integrate graphics + discrete **NVIDIA** GPU. You can see more information about your graphics configuration by searching **System information** in **Spotlight**, launch the application, and within the **Hardware** section, select **Graphics/Displays**.
+
+This script supports and has been tested on:
+* Mavericks **(10.9.5)**
+* Yosemite **(10.10.5)**
+* El Capitan **(10.11.6)**
+* Sierra **(10.12.6)**
+
+Other minor builds of the operating system will most likely work, but the above builds are confirmed to work. Testing was done on a **Mid-2014 MacBook Pro w/ GeForce GT 750M**.
 
 ## Usage
-Please ensure you have a backup of your operating system (or an additional install to browse the modified system's files to revert them manually) before proceeding.
+Please ensure that you have a backup of your operating system (or an additional install to browse the modified system's files to revert them manually) before proceeding.
 
 Before using the script, disable **System Integrity Protection** by booting into **Recovery**, opening **Terminal**, and typing in the following commands:
 ```bash
@@ -60,5 +71,8 @@ I was up and running on my external display - at the cost of no output on the in
 
 Due credit goes to the macrumors members (esp. **@nsgr**) on that forum for the **NVRAM** settings that make this possible without requiring a separate **ArchLinux** installation to manually manage these values.
 
+## Disclaimer
+This script moves core system files associated with macOS. While any of the potential issues with its application are recoverable, please use this script at your discretion. I will not be liable for any damages to your operating system.
+
 ## License
-This project is available under the **MIT** license.
+This project is available under the **MIT** license. See the license file for more information.
