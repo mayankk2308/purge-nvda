@@ -38,7 +38,6 @@ invoke_kext_caching()
     echo "Rebuilding kext cache..."
     touch /System/Library/Extensions
     kextcache -q -update-volume /
-    # could sleep instead to avoid kextcache use
     echo "Complete.\n"
 }
 

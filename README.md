@@ -4,6 +4,14 @@ A simple script for Macs that purges the activation of the discrete **NVIDIA** G
 ## Usage
 Please ensure you have a backup of your operating system (or an additional install to browse the modified system's files to revert them manually) before proceeding.
 
+Before using the script, disable **System Integrity Protection** by booting into **Recovery**, opening **Terminal**, and typing in the following commands:
+```bash
+$ csrutil disable
+$ reboot
+```
+
+Once booted, you can use the script as follows.
+
 To activate the purge:
 ```bash
 $ sudo ./purge-nvda.sh
@@ -48,7 +56,7 @@ Uninstallation recommended before updating macOS.
 ## The Story
 When **Apple** announced native external graphics support for macOS on **Thunderbolt 3** macs, I was ecstatic. Other eGPU users confirmed that it worked on older **Thunderbolt** macs. Being on the Mid-14 MBP w/ 750M, my enthusiasm quickly faded, however, as soon as I plugged in my eGPU and logged out (on High Sierra, of course) - all I could see on the external display was colored lines and glitches. Suspecting that **NVIDIA** drivers were to blame for this, I tried moving kexts associated with the same away from its default location to prevent loading, powered down the Mac, plugged in the eGPU, and booted. It worked (Beta 4)!
 
-I was up and running on my external display - at the cost of no output on the internal display and losing the ability to boot without external graphics connected. So I decided to create a tiny script to help move about the kexts, making it easy to restore the system to its default configuration. Then **@theitsage** on [gpu.io](https://egpu.io) suggested I look into a [macrumors forum](https://forums.macrumors.com/threads/force-2011-macbook-pro-8-2-with-failed-amd-gpu-to-always-use-intel-integrated-gpu-efi-variable-fix.2037591/page-28#post-24886189) where mac users with failing AMD chips were using the same process to prevent the use of the chip - with one major difference - they were forcing boot on the iGPU. This was what I needed to get the internal display to work and ensure external graphics compatibility. This configuration worked on Beta 4, but does not on Beta 5.
+I was up and running on my external display - at the cost of no output on the internal display and losing the ability to boot without external graphics connected. So I decided to create a tiny script to help move about the kexts, making it easy to restore the system to its default configuration. Then **@theitsage** on [gpu.io](https://egpu.io) suggested I look into a [macrumors forum](https://forums.macrumors.com/threads/force-2011-macbook-pro-8-2-with-failed-amd-gpu-to-always-use-intel-integrated-gpu-efi-variable-fix.2037591/page-28#post-24886189) where mac users with failing AMD chips were using the same process to prevent the use of the chip - with one major difference - they were forcing boot on the iGPU. This was what I needed to get the internal display to work and ensure external graphics compatibility. This configuration worked on Beta 4, but does not on Beta 5. How things pan out for later betas remains to be seen.
 
 Due credit goes to the macrumors members (esp. **@nsgr**) on that forum for the **NVRAM** settings that make this possible without requiring a separate **ArchLinux** installation to manually manage these values.
 
