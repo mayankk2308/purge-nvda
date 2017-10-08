@@ -65,7 +65,7 @@ restore_nvram()
     echo "Restoring NVRAM..."
     nvram -d fa4ce28d-b62f-4c99-9cc3-6815686e30f9:gpu-power-prefs
     nvram -d fa4ce28d-b62f-4c99-9cc3-6815686e30f9:gpu-active
-    nvram -d gpu-power-prefs=%01%00%00%00
+    nvram -d gpu-power-prefs
     echo "Complete.\n"
 }
 
