@@ -1,5 +1,5 @@
 # Purge-NVDA
-A simple script for Macs that purges the activation of the discrete **NVIDIA** GPUs on **macOS**. This script is a **work-in-progress** for **High Sierra** support - once functional, this will enable **native AMD external graphics support** which was previously not possible on **NVIDIA-based** macs.
+A simple script for Macs that purges the activation of the discrete **NVIDIA** GPUs on **macOS**. This script is currently **work-in-progress** for **High Sierra** support - once functional, this will enable **native AMD external graphics support** which was previously not possible on **NVIDIA-based** macs.
 
 ## Requirements
 This script is for use on **Macs** with integrate graphics + discrete **NVIDIA** GPU. You can see more information about your graphics configuration via **System Information** > **Hardware** > **Graphics/Displays**.
@@ -9,6 +9,7 @@ This script supports and has been tested on:
 * Yosemite **(10.10.5)**
 * El Capitan **(10.11.6)**
 * Sierra **(10.12.6)**
+* High Sierra **Beta 4 (10.13 - 17A315i)**
 
 Other minor builds of the operating system will most likely work, but the above builds are confirmed to work. Testing was done on a **Mid-2014 MacBook Pro w/ GeForce GT 750M**.
 
