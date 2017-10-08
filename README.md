@@ -2,7 +2,7 @@
 A simple script for Macs that purges the activation of the discrete **NVIDIA** GPUs on **macOS**. This script is currently **work-in-progress** for **High Sierra** support - once functional, this will enable **native AMD external graphics support** which was previously not possible on **NVIDIA-based** macs.
 
 ## Requirements
-This script is for use on **Macs** with integrate graphics + discrete **NVIDIA** GPU. You can see more information about your graphics configuration via **System Information** > **Hardware** > **Graphics/Displays**.
+This script is for use on **Macs** with integrate graphics + discrete **NVIDIA** GPU. You can see more information about your graphics configuration via **System Information** > **Hardware** > **Graphics/Displays**. This script requires **superuser access**.
 
 This script supports and has been tested on:
 * Mavericks **(10.9.5)**
