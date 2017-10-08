@@ -11,6 +11,15 @@ operation="$1"
 backup_dir="/Library/Application Support/Purge-NVDA/"
 final_message=""
 
+check_sudo()
+{
+    if [[ "$(id -u)" != 0 ]]
+    then
+      echo "This script requires superuser access. Please run with 'sudo'.\n"
+      exit
+    fi
+}
+
 usage()
 {
     cat <<EOF
@@ -56,6 +65,7 @@ restore_nvram()
     echo "Restoring NVRAM..."
     nvram -d fa4ce28d-b62f-4c99-9cc3-6815686e30f9:gpu-power-prefs
     nvram -d fa4ce28d-b62f-4c99-9cc3-6815686e30f9:gpu-active
+    nvram -d gpu-power-prefs=%01%00%00%00
     echo "Complete.\n"
 }
 
@@ -106,6 +116,7 @@ initiate_reboot()
     reboot
 }
 
+check_sudo
 if [[ "$operation" == "" ]]
 then
     move_nvda_drv
