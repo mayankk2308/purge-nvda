@@ -79,7 +79,6 @@ move_nvda_drv()
       then
         rm -r "$backup_dir"*
       fi
-      mv /System/Library/Extensions/NVDA*.kext "$backup_dir"
       mv /System/Library/Extensions/GeForce*.* "$backup_dir"
       echo "Complete.\n"
     else
