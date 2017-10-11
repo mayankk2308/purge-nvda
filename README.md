@@ -1,5 +1,5 @@
 # Purge-NVDA
-A simple script for Macs that purges the activation of the discrete **NVIDIA** GPUs on **macOS**. This script is currently **work-in-progress** for **High Sierra** support - once functional, this will enable **native AMD external graphics support** which was previously not possible on **NVIDIA-based** macs.
+A simple script for Macs that purges the activation of the discrete **NVIDIA** GPUs on **macOS**.
 
 ## Requirements
 This script is for use on **Macs** with integrate graphics + discrete **NVIDIA** GPU. You can see more information about your graphics configuration via **System Information** > **Hardware** > **Graphics/Displays**. This script requires **superuser access**.
@@ -9,7 +9,7 @@ This script supports and has been tested on:
 * Yosemite **(10.10.5)**
 * El Capitan **(10.11.6)**
 * Sierra **(10.12.6)**
-* High Sierra **Beta 4 (10.13 - 17A315i)**
+* High Sierra **(10.13)**
 
 Other minor builds of the operating system will most likely work, but the above builds are confirmed to work. Testing was done on a **Mid-2014 MacBook Pro w/ GeForce GT 750M**.
 
@@ -68,7 +68,9 @@ Uninstallation recommended before updating macOS.
 ## The Story
 When **Apple** announced native external graphics support for macOS on **Thunderbolt 3** macs, I was ecstatic. Other eGPU users confirmed that it worked on older **Thunderbolt** macs. Being on the Mid-14 MBP w/ 750M, my enthusiasm quickly faded, however, as soon as I plugged in my eGPU and logged out (on High Sierra, of course) - all I could see on the external display was colored lines and glitches. Suspecting that **NVIDIA** drivers were to blame for this, I tried moving kexts associated with the same away from its default location to prevent loading, powered down the Mac, plugged in the eGPU, and booted. It worked (Beta 4)!
 
-I was up and running on my external display - at the cost of no output on the internal display and losing the ability to boot without external graphics connected. So I decided to create a tiny script to help move about the kexts, making it easy to restore the system to its default configuration. Then **@theitsage** on [gpu.io](https://egpu.io) suggested I look into a [macrumors forum](https://forums.macrumors.com/threads/force-2011-macbook-pro-8-2-with-failed-amd-gpu-to-always-use-intel-integrated-gpu-efi-variable-fix.2037591/page-28#post-24886189) where mac users with failing AMD chips were using the same process to prevent the use of the chip - with one major difference - they were forcing boot on the iGPU. This was what I needed to get the internal display to work and ensure external graphics compatibility. This configuration worked on Beta 4, but does not on Beta 5. How things pan out for later betas remains to be seen.
+I was up and running on my external display - at the cost of no output on the internal display and losing the ability to boot without external graphics connected. So I decided to create a tiny script to help move about the kexts, making it easy to restore the system to its default configuration. Then **@theitsage** on [egpu.io](https://egpu.io) suggested I look into a [macrumors forum](https://forums.macrumors.com/threads/force-2011-macbook-pro-8-2-with-failed-amd-gpu-to-always-use-intel-integrated-gpu-efi-variable-fix.2037591/page-28#post-24886189) where mac users with failing AMD chips were using the same process to prevent the use of the chip - with one major difference - they were forcing boot on the iGPU. This was what I needed to get the internal display to work and ensure external graphics compatibility. This configuration worked on Beta 4, but does not on Beta 5.
+
+After investigating, thanks to **@goalque** and **tbl777** on [egpu.io](https://egpu.io), we discovered that only the **GeForce** kexts are to blame. Removing only those are sufficient for persistent iGPU-only boots. **1.2.1** is the first release to support **High Sierra**.
 
 Due credit goes to the macrumors members (esp. **@nsgr**) on that forum for the **NVRAM** settings that make this possible without requiring a separate **ArchLinux** installation to manually manage these values.
 
