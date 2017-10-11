@@ -1,15 +1,14 @@
 # CONTRIBUTION GUIDELINES
-Please report all problems in the **Issues** section with the following format:
-**<Issue Type> <Issue Summary>**
+Please report all problems in the **Issues** section and use labels to categorize them.
 
 These are the default issue types:
-* __[Power]__ - issues with power, heat, etc.
-* __[Hardware]__ - issues with brightness controls, etc.
-* __[GFX]__ - issues specific to discrete GPU *drivers*.
-* __[eGFX]__ - issues specific to external graphics *drivers* and acceleration.
-* __[Other]__ - other problems that couldn't be categorized.
+* __Power__ - issues with power, heat, etc.
+* __Hardware__ - issues with brightness controls, etc.
+* __GFX__ - issues specific to discrete GPU *drivers*.
+* __eGFX__ - issues specific to external graphics *drivers* and acceleration.
+* __Other__ - other problems that couldn't be categorized.
 
 Example Issue:
-**[Power] Discrete GPU consuming additional 10W**
+**Discrete GPU consuming additional 10W** [label:Power]
 
 Please adhere to these guidelines and post issues in an orderly manner. Thanks!
