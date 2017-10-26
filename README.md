@@ -70,7 +70,7 @@ When **Apple** announced native external graphics support for macOS on **Thunder
 
 I was up and running on my external display - at the cost of no output on the internal display and losing the ability to boot without external graphics connected. So I decided to create a tiny script to help move about the kexts, making it easy to restore the system to its default configuration. Then **@theitsage** on [egpu.io](https://egpu.io) suggested I look into a [macrumors forum](https://forums.macrumors.com/threads/force-2011-macbook-pro-8-2-with-failed-amd-gpu-to-always-use-intel-integrated-gpu-efi-variable-fix.2037591/page-28#post-24886189) where mac users with failing AMD chips were using the same process to prevent the use of the chip - with one major difference - they were forcing boot on the iGPU. This was what I needed to get the internal display to work and ensure external graphics compatibility. This configuration worked on Beta 4, but does not on Beta 5.
 
-After investigating, thanks to **@goalque** and **tbl777** on [egpu.io](https://egpu.io), we discovered that only the **GeForce** kexts are to blame. Removing only those are sufficient for persistent iGPU-only boots. **1.2.1** is the first release to support **High Sierra**.
+After investigating, thanks to **@goalque** and **@tbl777** on [egpu.io](https://egpu.io), we discovered that only the **GeForce** kexts are to blame. Removing only those are sufficient for persistent iGPU-only boots. **1.2.1** is the first release to support **High Sierra**.
 
 Due credit goes to the macrumors members (esp. **@nsgr**) on that forum for the **NVRAM** settings that make this possible without requiring a separate **ArchLinux** installation to manually manage these values.
 

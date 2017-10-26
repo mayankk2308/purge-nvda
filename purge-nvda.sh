@@ -55,7 +55,6 @@ update_nvram()
     echo "Updating NVRAM..."
     nvram fa4ce28d-b62f-4c99-9cc3-6815686e30f9:gpu-power-prefs=%01%00%00%00
     nvram fa4ce28d-b62f-4c99-9cc3-6815686e30f9:gpu-active=%01%00%00%00
-    nvram gpu-power-prefs=%01%00%00%00
     final_message="iGPU will be preferred on next boot, and on subsequent boots if dGPU drivers are unavailable."
     echo "Complete.\n"
 }
@@ -65,7 +64,6 @@ restore_nvram()
     echo "Restoring NVRAM..."
     nvram -d fa4ce28d-b62f-4c99-9cc3-6815686e30f9:gpu-power-prefs
     nvram -d fa4ce28d-b62f-4c99-9cc3-6815686e30f9:gpu-active
-    nvram -d gpu-power-prefs
     echo "Complete.\n"
 }
 
