@@ -2,34 +2,34 @@
 A simple script for Macs that purges the activation of the discrete **NVIDIA** GPUs on **macOS**.
 
 ## Requirements
-This script is for use on **Macs** with integrate graphics + discrete **NVIDIA** GPU. You can see more information about your graphics configuration via **System Information** > **Hardware** > **Graphics/Displays**. This script requires **superuser access**.
+This script requires the following specifications:
+* Mac with integrated Intel GPU + discrete **NVIDIA** GPU
+* **macOS Mavericks** or later
 
-This script supports and has been tested on:
-* Mavericks **(10.9.5)**
-* Yosemite **(10.10.5)**
-* El Capitan **(10.11.6)**
-* Sierra **(10.12.6)**
-* High Sierra **(10.13)**
-
-Other minor builds of the operating system will most likely work, but the above builds are confirmed to work. Testing was done on a **Mid-2014 MacBook Pro w/ GeForce GT 750M**.
+It is recommended that you have a backup of the system. Testing was done on a **Mid-2014 MacBook Pro w/ GeForce GT 750M**.
 
 ## Usage
-Please ensure that you have a backup of your operating system (or an additional install to browse the modified system's files to revert them manually) before proceeding.
+Please follow these steps:
 
-Before using the script, disable **System Integrity Protection** by booting into **Recovery**, opening **Terminal**, and typing in the following commands:
+### Step 1
+Disable **system integrity protection** for macOS using **Terminal** in **Recovery**:
 ```bash
 $ csrutil disable
 $ reboot
 ```
 
-Once booted, you can use the script as follows.
-
-To activate the purge:
+### Step 2
+Boot back into macOS and run the following commands:
 ```bash
+$ cd /path/to/script/purge-nvda.sh
+$ sudo chmod +x purge-nvda.sh
 $ sudo ./purge-nvda.sh
 ```
 
-Your mac will now behave like an iGPU-only device. If you are unable to boot into macOS, boot into recovery, launch **Terminal** and type in the following commands:
+Your mac will now behave like an iGPU-only device.
+
+## Troubleshooting
+If you are unable to boot into macOS, boot into recovery, launch **Terminal** and type in the following commands:
 ```bash
 $ nvram -c
 $ cd /Volumes/<boot_disk_name>
@@ -39,6 +39,7 @@ $ reboot
 
 After rebooting, **uninstall** the script.
 
+## Additional Options
 To update the **NVRAM** only:
 ```bash
 $ sudo ./purge-nvda.sh nvram-only
@@ -53,7 +54,7 @@ $ sudo ./purge-nvda.sh nvram-restore
 
 This restores the NVRAM variables to how they were before running the script.
 
-To completely uninstall changes:
+To completely uninstall changes (recommended):
 ```bash
 $ sudo ./purge-nvda.sh uninstall
 ```
@@ -63,7 +64,7 @@ For help with how to use the script in the command line:
 $ ./purge-nvda.sh help
 ```
 
-Uninstallation recommended before updating macOS.
+**Uninstallation recommended before updating macOS.**
 
 ## The Story
 When **Apple** announced native external graphics support for macOS on **Thunderbolt 3** macs, I was ecstatic. Other eGPU users confirmed that it worked on older **Thunderbolt** macs. Being on the Mid-14 MBP w/ 750M, my enthusiasm quickly faded, however, as soon as I plugged in my eGPU and logged out (on High Sierra, of course) - all I could see on the external display was colored lines and glitches. Suspecting that **NVIDIA** drivers were to blame for this, I tried moving kexts associated with the same away from its default location to prevent loading, powered down the Mac, plugged in the eGPU, and booted. It worked (Beta 4)!
@@ -71,6 +72,8 @@ When **Apple** announced native external graphics support for macOS on **Thunder
 I was up and running on my external display - at the cost of no output on the internal display and losing the ability to boot without external graphics connected. So I decided to create a tiny script to help move about the kexts, making it easy to restore the system to its default configuration. Then **@theitsage** on [egpu.io](https://egpu.io) suggested I look into a [macrumors forum](https://forums.macrumors.com/threads/force-2011-macbook-pro-8-2-with-failed-amd-gpu-to-always-use-intel-integrated-gpu-efi-variable-fix.2037591/page-28#post-24886189) where mac users with failing AMD chips were using the same process to prevent the use of the chip - with one major difference - they were forcing boot on the iGPU. This was what I needed to get the internal display to work and ensure external graphics compatibility. This configuration worked on Beta 4, but does not on Beta 5.
 
 After investigating, thanks to **@goalque** and **@tbl777** on [egpu.io](https://egpu.io), we discovered that only the **GeForce** kexts are to blame. Removing only those are sufficient for persistent iGPU-only boots. **1.2.1** is the first release to support **High Sierra**.
+
+Finally, on **macOS 10.13.4**, many bugs have been eliminated and **1.2.0** now allows for external AMD graphics to run on macs with discrete NVIDIA GPUs.
 
 Due credit goes to the macrumors members (esp. **@nsgr**) on that forum for the **NVRAM** settings that make this possible without requiring a separate **ArchLinux** installation to manually manage these values.
 

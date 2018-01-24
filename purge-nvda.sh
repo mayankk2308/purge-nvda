@@ -1,5 +1,6 @@
 #!/bin/sh
 # Script (purge-nvda.sh) by mac_editor @ egpu.io (mayankk2308@gmail.com)
+# Version: 1.2.2
 
 # Usage:
 # sudo ./purge-nvda.sh -> moves NVDA kexts to prevent NVDA GPU activation
@@ -114,6 +115,7 @@ initiate_reboot()
 }
 
 check_sudo
+echo "$dir"
 if [[ "$operation" == "" ]]
 then
     move_nvda_drv
