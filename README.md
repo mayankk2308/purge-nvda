@@ -66,7 +66,7 @@ $ sudo ./purge-nvda.sh uninstall
 
 For help with how to use the script in the command line:
 ```bash
-$ ./purge-nvda.sh help
+$ sudo ./purge-nvda.sh help
 ```
 
 **Uninstallation recommended before updating macOS.**
