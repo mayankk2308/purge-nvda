@@ -1,5 +1,5 @@
 # Purge-NVDA
-A simple script for Macs that purges the activation of the discrete **NVIDIA** GPUs on **macOS**.
+A simple script for Macs that purges the activation of the discrete **NVIDIA** GPUs on **macOS** and by extension enables **AMD external graphics** support.
 
 ## Requirements
 This script requires the following specifications:
@@ -40,6 +40,11 @@ $ reboot
 After rebooting, **uninstall** the script.
 
 ## Additional Options
+If you do not require **AMD eGPU** support:
+```bash
+$ sudo ./purge-nvda.sh suppress-only
+```
+
 To update the **NVRAM** only:
 ```bash
 $ sudo ./purge-nvda.sh nvram-only

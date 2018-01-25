@@ -3,8 +3,9 @@
 # Version: 1.2.2
 
 # Usage:
-# sudo ./purge-nvda.sh -> moves NVDA kexts to prevent NVDA GPU activation
-# sudo ./purge-nvda.sh restore -> moves NVDA kexts back while keeping a backup - does not override newer versions
+# sudo ./purge-nvda.sh -> moves NVDA kexts to prevent NVDA GPU activation and enables AMD eGPU support
+# sudo ./purge-nvda.sh suppress-only -> Same as without arguments sans AMD eGPU support
+# sudo ./purge-nvda.sh nvram-restore -> restores NVRAM
 # sudo ./purge-nvda.sh nvram-only -> update only NVRAM
 # sudo ./purge-nvda.sh uninstall -> restores NVDA kexts, resets NVRAM, and removes backup traces
 
@@ -30,7 +31,9 @@ usage()
 
     You can use one of the following parameters:
 
-    No arguments: Moves NVIDIA-associated kexts, updates NVRAM, and reboots.
+    No arguments: Moves NVIDIA-associated kexts, updates NVRAM, and reboots and enables AMD eGPUs.
+
+    suppress-only: Same as with no arguments, except without AMD eGPU support.
 
     nvram-only: Updates the NVRAM for iGPU-only mode and reboots.
 
@@ -70,6 +73,7 @@ restore_nvram()
 
 move_nvda_drv()
 {
+    flag="$1"
     mkdir -p "$backup_dir"
     if [[ "$(ls /System/Library/Extensions/ | grep NVDA)" && "$(ls /System/Library/Extensions/ | grep GeForce)" ]]
     then
@@ -78,11 +82,15 @@ move_nvda_drv()
       then
         rm -r "$backup_dir"*
       fi
-      mv /System/Library/Extensions/NVDA*.kext "$backup_dir"
+      if [[ "$flag" == "true" ]]
+      then
+          mv /System/Library/Extensions/NVDA*.kext "$backup_dir"
+      fi
       mv /System/Library/Extensions/GeForce*.* "$backup_dir"
       echo "Complete.\n"
     else
-    echo "Kexts already moved. No action required."
+        echo "Some/all required kexts already moved. No action taken.\n"
+        exit
     fi
 }
 
@@ -110,19 +118,27 @@ uninstall()
 
 initiate_reboot()
 {
-    echo "Rebooting..."
+    echo "Rebooting. Press Ctrl + C to cancel..."
     sleep 3
     reboot
 }
 
-check_sudo
-echo "$dir"
-if [[ "$operation" == "" ]]
-then
-    move_nvda_drv
+proceed_exec()
+{
     update_nvram
     final_message="Your mac will now behave as an iGPU-only device."
     invoke_kext_caching
+}
+
+check_sudo
+if [[ "$operation" == "" ]]
+then
+    move_nvda_drv "true"
+    proceed_exec
+elif [[ "$operation" == "suppress-only" ]]
+then
+    move_nvda_drv "false"
+    proceed_exec
 elif [[ "$operation" == "nvram-only" ]]
 then
     update_nvram
