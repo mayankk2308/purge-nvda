@@ -34,6 +34,23 @@ check_sys_integrity_protection()
     fi
 }
 
+check_macos_version()
+{
+    macos_ver=`sw_vers -productVersion`
+    if [[ "$macos_ver" == "10.13" ||  "$macos_ver" == "10.13.1" || "$macos_ver" == "10.13.2" || "$macos_ver" == "10.13.3" ]]
+    then
+        echo "
+        This version of macOS will not support external AMD graphics.
+
+        If you wish to only suppress the dGPU - use the 'suppress-only' option.
+
+        Additionally, due to problems with kernel caching, it is recommended to
+
+        run this script in Single User Mode for this version of macOS.\n"
+        exit
+    fi
+}
+
 usage()
 {
     echo "
@@ -148,6 +165,7 @@ check_sudo
 check_sys_integrity_protection
 if [[ "$operation" == "" ]]
 then
+    check_macos_version
     move_nvda_drv "true"
     proceed_exec
 elif [[ "$operation" == "suppress-only" ]]
