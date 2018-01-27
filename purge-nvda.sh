@@ -59,7 +59,7 @@ update_nvram()
     echo "Updating NVRAM..."
     nvram fa4ce28d-b62f-4c99-9cc3-6815686e30f9:gpu-power-prefs=%01%00%00%00
     nvram fa4ce28d-b62f-4c99-9cc3-6815686e30f9:gpu-active=%01%00%00%00
-    final_message="iGPU will be preferred on next boot, and on subsequent boots if dGPU drivers are unavailable."
+    final_message="iGPU will be preferred on next boot, and on subsequent boots if dGPU drivers are unavailable.\n"
     echo "Complete.\n"
 }
 
@@ -103,16 +103,17 @@ restore_nvda_drv()
 
 uninstall()
 {
-    restore_nvram
-    if [[ "$(ls "$backup_dir")" ]]
+    if [[ -d "$backup_dir" ]]
     then
+        restore_nvram
         restore_nvda_drv
         invoke_kext_caching
         echo "Uninstalling..."
         rm -r "$backup_dir"
-        final_message="Uninstallation complete."
+        final_message="Uninstallation complete.\n"
     else
-        final_message="Could not find valid installation. NVRAM was restored."
+        final_message="Could not find valid installation. No action taken.\n"
+        exit
     fi
 }
 
@@ -126,7 +127,7 @@ initiate_reboot()
 proceed_exec()
 {
     update_nvram
-    final_message="Your mac will now behave as an iGPU-only device."
+    final_message="Your mac will now behave as an iGPU-only device.\n"
     invoke_kext_caching
 }
 
@@ -153,7 +154,7 @@ then
     usage
     exit
 else
-    echo "Invalid argument. Use the 'help' option for usage information."
+    echo "Invalid argument. Use the 'help' option for usage information.\n"
     exit
 fi
 
