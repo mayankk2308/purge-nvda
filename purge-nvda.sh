@@ -1,6 +1,6 @@
 #!/bin/sh
 # Script (purge-nvda.sh) by mac_editor @ egpu.io (mayankk2308@gmail.com)
-# Version: 1.2.2
+# Version: 1.2.3
 
 # Usage:
 # sudo ./purge-nvda.sh -> moves NVDA kexts to prevent NVDA GPU activation and enables AMD eGPU support
@@ -22,28 +22,38 @@ check_sudo()
     fi
 }
 
+check_sys_integrity_protection()
+{
+    if [[ `csrutil status | grep -i "enabled"` ]]
+    then
+        echo "
+        System Integrity Protection needs to be disabled before proceeding.
+
+        Boot into recovery, launch Terminal and execute: 'csrutil disable'\n"
+        exit
+    fi
+}
+
 usage()
 {
-    cat <<EOF
-    purge-nvda.sh moves NVDA kexts and updates NVRAM values to purge discrete NVIDIA chips. Please disable System Integrity Protection before proceeding.
+    echo "
+    Usage:
 
-    Usage: ./purge-nvda.sh [param]
+        ./purge-nvda.sh [param]
 
     You can use one of the following parameters:
 
-    No arguments: Moves NVIDIA-associated kexts, updates NVRAM, and reboots and enables AMD eGPUs.
+        No arguments: Suppresses dGPU + supports AMD eGPUs.
 
-    suppress-only: Same as with no arguments, except without AMD eGPU support.
+        suppress-only: Only suppresses dGPU.
 
-    nvram-only: Updates the NVRAM for iGPU-only mode and reboots.
+        nvram-only: Updates the NVRAM for iGPU-only mode.
 
-    nvram-restore: Restores the NVRAM to how it was before and reboots.
+        nvram-restore: Restores the NVRAM to how it was before.
 
-    uninstall: Completely removes changes made by the script and reboots.
+        uninstall: Restores system to pre-purge state.
 
-    help: Displays usage information.
-
-EOF
+        help: Displays usage information."
 }
 
 invoke_kext_caching()
@@ -112,15 +122,18 @@ uninstall()
         rm -r "$backup_dir"
         final_message="Uninstallation complete.\n"
     else
-        final_message="Could not find valid installation. No action taken.\n"
+        echo "Could not find valid installation. No action taken.\n"
         exit
     fi
 }
 
 initiate_reboot()
 {
-    echo "Rebooting. Press Ctrl + C to cancel..."
-    sleep 3
+    for time in {5..0}
+    do
+        printf "Restarting in $time s | Ctrl + C to cancel...\r"
+        sleep 1
+    done
     reboot
 }
 
@@ -132,6 +145,7 @@ proceed_exec()
 }
 
 check_sudo
+check_sys_integrity_protection
 if [[ "$operation" == "" ]]
 then
     move_nvda_drv "true"
