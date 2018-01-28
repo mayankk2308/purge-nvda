@@ -1,11 +1,10 @@
 #!/bin/sh
 # Script (purge-nvda.sh) by mac_editor @ egpu.io (mayankk2308@gmail.com)
-# Version: 1.2.3
+# Version: 1.3.0
 
 # Usage:
 # sudo ./purge-nvda.sh -> moves NVDA kexts to prevent NVDA GPU activation and enables AMD eGPU support
 # sudo ./purge-nvda.sh suppress-only -> Same as without arguments sans AMD eGPU support
-# sudo ./purge-nvda.sh nvram-restore -> restores NVRAM
 # sudo ./purge-nvda.sh nvram-only -> update only NVRAM
 # sudo ./purge-nvda.sh uninstall -> restores NVDA kexts, resets NVRAM, and removes backup traces
 
@@ -62,11 +61,9 @@ usage()
 
         No arguments: Suppresses dGPU + supports AMD eGPUs.
 
-        suppress-only: Only suppresses dGPU.
+        suppress-only: Suppresses dGPU.
 
-        nvram-only: Updates the NVRAM for iGPU-only mode.
-
-        nvram-restore: Restores the NVRAM to how it was before.
+        nvram-only: Only updates the NVRAM for iGPU-only mode.
 
         uninstall: Restores system to pre-purge state.
 
@@ -130,17 +127,16 @@ restore_nvda_drv()
 
 uninstall()
 {
+    restore_nvram
     if [[ -d "$backup_dir" ]]
     then
-        restore_nvram
         restore_nvda_drv
         invoke_kext_caching
         echo "Uninstalling..."
         rm -r "$backup_dir"
         final_message="Uninstallation complete.\n"
     else
-        echo "Could not find valid installation. No action taken.\n"
-        exit
+        final_message="Could not find valid installation. NVRAM was restored.\n"
     fi
 }
 
@@ -148,13 +144,13 @@ initiate_reboot()
 {
     for time in {5..0}
     do
-        printf "Restarting in $time s | Ctrl + C to cancel...\r"
+        printf "Restarting in $time s (Recommended)...\r"
         sleep 1
     done
     reboot
 }
 
-proceed_exec()
+proceed_purge()
 {
     update_nvram
     final_message="Your mac will now behave as an iGPU-only device.\n"
@@ -167,17 +163,14 @@ if [[ "$operation" == "" ]]
 then
     check_macos_version
     move_nvda_drv "true"
-    proceed_exec
+    proceed_purge
 elif [[ "$operation" == "suppress-only" ]]
 then
     move_nvda_drv "false"
-    proceed_exec
+    proceed_purge
 elif [[ "$operation" == "nvram-only" ]]
 then
     update_nvram
-elif [[ "$operation" == "nvram-restore" ]]
-then
-    restore_nvram
 elif [[ "$operation" == "uninstall" ]]
 then
     uninstall
