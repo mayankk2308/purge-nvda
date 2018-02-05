@@ -1,0 +1,336 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 48;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		A83E5DC22027E669007D4326 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83E5DC12027E669007D4326 /* AppDelegate.swift */; };
+		A83E5DC62027E669007D4326 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A83E5DC52027E669007D4326 /* Assets.xcassets */; };
+		A83E5DC92027E669007D4326 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A83E5DC72027E669007D4326 /* Main.storyboard */; };
+		A83E5DD52027EAAF007D4326 /* PurgeMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83E5DD42027EAAF007D4326 /* PurgeMenu.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		A83E5DBE2027E669007D4326 /* Purge NVIDIA.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Purge NVIDIA.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		A83E5DC12027E669007D4326 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		A83E5DC52027E669007D4326 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A83E5DC82027E669007D4326 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		A83E5DCA2027E669007D4326 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A83E5DCB2027E669007D4326 /* Purge_NVIDIA.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Purge_NVIDIA.entitlements; sourceTree = "<group>"; };
+		A83E5DD42027EAAF007D4326 /* PurgeMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PurgeMenu.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		A83E5DBB2027E669007D4326 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		A83E5DB52027E669007D4326 = {
+			isa = PBXGroup;
+			children = (
+				A83E5DC02027E669007D4326 /* Purge NVIDIA */,
+				A83E5DBF2027E669007D4326 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		A83E5DBF2027E669007D4326 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				A83E5DBE2027E669007D4326 /* Purge NVIDIA.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		A83E5DC02027E669007D4326 /* Purge NVIDIA */ = {
+			isa = PBXGroup;
+			children = (
+				A83E5DD32027EA6B007D4326 /* Menu Anatomy */,
+				A83E5DD12027E81B007D4326 /* Configuration */,
+			);
+			path = "Purge NVIDIA";
+			sourceTree = "<group>";
+		};
+		A83E5DD12027E81B007D4326 /* Configuration */ = {
+			isa = PBXGroup;
+			children = (
+				A83E5DC52027E669007D4326 /* Assets.xcassets */,
+				A83E5DC72027E669007D4326 /* Main.storyboard */,
+				A83E5DCA2027E669007D4326 /* Info.plist */,
+				A83E5DCB2027E669007D4326 /* Purge_NVIDIA.entitlements */,
+			);
+			name = Configuration;
+			sourceTree = "<group>";
+		};
+		A83E5DD32027EA6B007D4326 /* Menu Anatomy */ = {
+			isa = PBXGroup;
+			children = (
+				A83E5DC12027E669007D4326 /* AppDelegate.swift */,
+				A83E5DD42027EAAF007D4326 /* PurgeMenu.swift */,
+			);
+			name = "Menu Anatomy";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		A83E5DBD2027E669007D4326 /* Purge NVIDIA */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = A83E5DCE2027E669007D4326 /* Build configuration list for PBXNativeTarget "Purge NVIDIA" */;
+			buildPhases = (
+				A83E5DBA2027E669007D4326 /* Sources */,
+				A83E5DBB2027E669007D4326 /* Frameworks */,
+				A83E5DBC2027E669007D4326 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "Purge NVIDIA";
+			productName = "Purge NVIDIA";
+			productReference = A83E5DBE2027E669007D4326 /* Purge NVIDIA.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		A83E5DB62027E669007D4326 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0920;
+				LastUpgradeCheck = 0920;
+				ORGANIZATIONNAME = "Mayank Kumar";
+				TargetAttributes = {
+					A83E5DBD2027E669007D4326 = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = A83E5DB92027E669007D4326 /* Build configuration list for PBXProject "Purge NVIDIA" */;
+			compatibilityVersion = "Xcode 8.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = A83E5DB52027E669007D4326;
+			productRefGroup = A83E5DBF2027E669007D4326 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				A83E5DBD2027E669007D4326 /* Purge NVIDIA */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		A83E5DBC2027E669007D4326 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A83E5DC62027E669007D4326 /* Assets.xcassets in Resources */,
+				A83E5DC92027E669007D4326 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		A83E5DBA2027E669007D4326 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				A83E5DD52027EAAF007D4326 /* PurgeMenu.swift in Sources */,
+				A83E5DC22027E669007D4326 /* AppDelegate.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		A83E5DC72027E669007D4326 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				A83E5DC82027E669007D4326 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		A83E5DCC2027E669007D4326 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		A83E5DCD2027E669007D4326 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = macosx;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+			};
+			name = Release;
+		};
+		A83E5DCF2027E669007D4326 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "Purge NVIDIA/Purge_NVIDIA.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = YF7XP6ZYSQ;
+				INFOPLIST_FILE = "Purge NVIDIA/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.mayank.Purge-NVIDIA";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+			};
+			name = Debug;
+		};
+		A83E5DD02027E669007D4326 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "Purge NVIDIA/Purge_NVIDIA.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEVELOPMENT_TEAM = YF7XP6ZYSQ;
+				INFOPLIST_FILE = "Purge NVIDIA/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.10;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.mayank.Purge-NVIDIA";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		A83E5DB92027E669007D4326 /* Build configuration list for PBXProject "Purge NVIDIA" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A83E5DCC2027E669007D4326 /* Debug */,
+				A83E5DCD2027E669007D4326 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		A83E5DCE2027E669007D4326 /* Build configuration list for PBXNativeTarget "Purge NVIDIA" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				A83E5DCF2027E669007D4326 /* Debug */,
+				A83E5DD02027E669007D4326 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = A83E5DB62027E669007D4326 /* Project object */;
+}
