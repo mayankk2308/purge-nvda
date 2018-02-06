@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A82DA5C72028FE3000D90C6D /* ScriptManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A82DA5C62028FE3000D90C6D /* ScriptManager.swift */; };
 		A83E5DC22027E669007D4326 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = A83E5DC12027E669007D4326 /* AppDelegate.swift */; };
 		A83E5DC62027E669007D4326 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A83E5DC52027E669007D4326 /* Assets.xcassets */; };
 		A83E5DC92027E669007D4326 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A83E5DC72027E669007D4326 /* Main.storyboard */; };
@@ -14,6 +15,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		A82DA5C62028FE3000D90C6D /* ScriptManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScriptManager.swift; sourceTree = "<group>"; };
 		A83E5DBE2027E669007D4326 /* Purge NVIDIA.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Purge NVIDIA.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A83E5DC12027E669007D4326 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		A83E5DC52027E669007D4326 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -34,6 +36,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		A82DA5C82028FE3C00D90C6D /* Core */ = {
+			isa = PBXGroup;
+			children = (
+				A82DA5C62028FE3000D90C6D /* ScriptManager.swift */,
+			);
+			name = Core;
+			sourceTree = "<group>";
+		};
 		A83E5DB52027E669007D4326 = {
 			isa = PBXGroup;
 			children = (
@@ -53,7 +63,8 @@
 		A83E5DC02027E669007D4326 /* Purge NVIDIA */ = {
 			isa = PBXGroup;
 			children = (
-				A83E5DD32027EA6B007D4326 /* Menu Anatomy */,
+				A82DA5C82028FE3C00D90C6D /* Core */,
+				A83E5DD32027EA6B007D4326 /* Interface */,
 				A83E5DD12027E81B007D4326 /* Configuration */,
 			);
 			path = "Purge NVIDIA";
@@ -70,13 +81,13 @@
 			name = Configuration;
 			sourceTree = "<group>";
 		};
-		A83E5DD32027EA6B007D4326 /* Menu Anatomy */ = {
+		A83E5DD32027EA6B007D4326 /* Interface */ = {
 			isa = PBXGroup;
 			children = (
 				A83E5DC12027E669007D4326 /* AppDelegate.swift */,
 				A83E5DD42027EAAF007D4326 /* PurgeMenu.swift */,
 			);
-			name = "Menu Anatomy";
+			name = Interface;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -152,6 +163,7 @@
 			files = (
 				A83E5DD52027EAAF007D4326 /* PurgeMenu.swift in Sources */,
 				A83E5DC22027E669007D4326 /* AppDelegate.swift in Sources */,
+				A82DA5C72028FE3000D90C6D /* ScriptManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

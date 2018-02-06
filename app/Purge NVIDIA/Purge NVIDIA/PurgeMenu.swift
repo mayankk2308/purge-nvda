@@ -27,7 +27,8 @@ class PurgeMenu {
         menu.addItem(NSMenuItem(title: "Re-enable dGPU", action: #selector(AppDelegate.restore(_:)), keyEquivalent: "R"))
         menu.addItem(NSMenuItem.separator())
         menu.addItem(NSMenuItem(title: "About", action: #selector(AppDelegate.showAbout(_:)), keyEquivalent: ""))
-        menu.addItem(NSMenuItem(title: "Preferences...", action: #selector(AppDelegate.showPreferences(_:)), keyEquivalent: ","))
+        menu.addItem(NSMenuItem(title: "Launch at Login", action: #selector(AppDelegate.launchAtLogin(_:)), keyEquivalent: ""))
+        menu.addItem(NSMenuItem.separator())
         menu.addItem(NSMenuItem(title: "Quit", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
         statusItem.menu = menu
     }
