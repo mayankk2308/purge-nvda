@@ -21,14 +21,14 @@ class PurgeMenu {
     
     func configureMenus() {
         let menu = NSMenu()
+        menu.addItem(NSMenuItem(title: "Purge NVIDIA 1.0.0, SV 1.3.0", action: nil, keyEquivalent: ""))
+        menu.addItem(NSMenuItem.separator())
         menu.addItem(NSMenuItem(title: "Enable AMD eGPUs", action: #selector(AppDelegate.purge(_:)), keyEquivalent: "D"))
         menu.addItem(NSMenuItem(title: "Suppress dGPU", action: #selector(AppDelegate.suppressOnly(_:)), keyEquivalent: "S"))
         menu.addItem(NSMenuItem.separator())
         menu.addItem(NSMenuItem(title: "Re-enable dGPU", action: #selector(AppDelegate.restore(_:)), keyEquivalent: "R"))
         menu.addItem(NSMenuItem.separator())
-        menu.addItem(NSMenuItem(title: "About", action: #selector(AppDelegate.showAbout(_:)), keyEquivalent: ""))
         menu.addItem(NSMenuItem(title: "Launch at Login", action: #selector(AppDelegate.launchAtLogin(_:)), keyEquivalent: ""))
-        menu.addItem(NSMenuItem.separator())
         menu.addItem(NSMenuItem(title: "Quit", action: #selector(NSApplication.terminate(_:)), keyEquivalent: "q"))
         statusItem.menu = menu
     }

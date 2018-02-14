@@ -18,33 +18,25 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         purgeMenu.configureMenus()
     }
     
-    @objc func purge(_ sender: Any?) {
-        genericPurge(withArg: "-i")
-    }
-    
-    @objc func suppressOnly(_ sender: Any?) {
-        genericPurge(withArg: "-so")
-    }
-    
-    @objc func restore(_ sender: Any?) {
-        genericPurge(withArg: "-u")
-    }
+}
 
-    @objc func showAbout(_ sender: Any?) {
-        // show About
-    }
-    
-    @objc func launchAtLogin(_ sender: Any?) {
-        // launch at login
-    }
+extension AppDelegate {
     
     func genericPurge(withArg arg: String) {
         let script = "do shell script \"/usr/local/bin/purge-nvda \(arg)\" with administrator privileges"
         ScriptManager.execute(withScript: script) { error in
-            print(error)
             self.showDialog(withStatusCode: error)
         }
     }
+    
+    func reboot() {
+        let script = "tell application \"Finder\" to restart"
+        ScriptManager.execute(withScript: script, terminationHandler: nil)
+    }
+    
+}
+
+extension AppDelegate {
     
     func showDialog(withStatusCode statusCode: Int) {
         DispatchQueue.main.async {
@@ -84,9 +76,24 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         }
     }
     
-    func reboot() {
-        let script = "tell application \"Finder\" to restart"
-        ScriptManager.execute(withScript: script, terminationHandler: nil)
+}
+
+extension AppDelegate {
+    
+    @objc func purge(_ sender: Any?) {
+        genericPurge(withArg: "")
+    }
+    
+    @objc func suppressOnly(_ sender: Any?) {
+        genericPurge(withArg: "suppress-only")
+    }
+    
+    @objc func restore(_ sender: Any?) {
+        genericPurge(withArg: "uninstall")
+    }
+    
+    @objc func launchAtLogin(_ sender: Any?) {
+        // launch at login
     }
     
 }
