@@ -23,7 +23,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 extension AppDelegate {
     
     func genericPurge(withArg arg: String) {
-        let script = "do shell script \"/usr/local/bin/purge-nvda \(arg)\" with administrator privileges"
+        let script = "do shell script \"/usr/local/bin/purge-nvda \(arg); sleep 5\" with administrator privileges"
         ScriptManager.execute(withScript: script) { error in
             self.showDialog(withStatusCode: error)
         }
