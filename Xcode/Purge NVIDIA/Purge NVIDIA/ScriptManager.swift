@@ -8,6 +8,13 @@
 
 import Foundation
 
+struct Scripts {
+    static let enableAMDeGPUs = ""
+    static let purgedGPU = ""
+    static let restoreDefault = ""
+}
+
+
 class ScriptManager {
     
     static func execute(withScript script: String, terminationHandler: ((Int) -> Void)?) {
