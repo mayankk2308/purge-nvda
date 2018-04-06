@@ -6,9 +6,7 @@ This script requires the following specifications:
 * Mac with integrated Intel GPU + discrete **NVIDIA** GPU
 * **macOS Mavericks** or later
 
-For AMD eGPU support:
-* **macOS 10.13 Beta 4**
-* **macOS 10.13.4 Beta 1**
+For AMD eGPU support please use **macOS 10.13.4 or later**.
 
 It is recommended that you have a backup of the system. Testing was done on a **Mid-2014 MacBook Pro w/ GeForce GT 750M**.
 
@@ -30,15 +28,15 @@ $ sudo chmod +x purge-nvda.sh
 $ sudo ./purge-nvda.sh
 ```
 
-Your mac will now behave like an iGPU-only device.
+Your mac will now behave like an iGPU-only device. The kextless patch is applicable only to the default option, not **suppress-only** which does move kexts. This patch survives macOS updates as well as applies to any installation of macOS run on the patched machine. It is an EFI patch now, rather than a kext patch.
 
 ## Troubleshooting
-If you are unable to boot into macOS, boot into recovery, launch **Terminal** and type in the following commands:
+If you are unable to boot into macOS, boot into Single User Mode (**CMD + S** on boot) and type in the following commands:
 ```bash
 $ nvram -c
-$ cd /Volumes/<boot_disk_name>
-$ mv Library/Application\ Support/Purge-NVDA/* System/Library/Extensions/
-$ reboot
+$ mount -uw /
+$ cd /path/to/script/
+$ ./purge-nvda.sh uninstall
 ```
 
 After rebooting, **uninstall** the script.
@@ -65,8 +63,6 @@ For help with how to use the script in the command line:
 ```bash
 $ sudo ./purge-nvda.sh help
 ```
-
-**Uninstallation recommended before updating macOS.**
 
 ## References
 Due credit goes to the MacRumors members (esp. **@nsgr**) for the **NVRAM** settings that make this possible without requiring a separate **ArchLinux** installation to manually manage these values.
