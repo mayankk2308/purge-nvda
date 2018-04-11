@@ -1,3 +1,4 @@
+![Github All Releases](https://img.shields.io/github/downloads/mayankk2308/purge-nvda/total.svg?style=for-the-badge)
 # Purge-NVDA
 A simple script for Macs that purges the activation of the discrete **NVIDIA** GPUs on **macOS** and by extension enables **AMD external graphics** support.
 
