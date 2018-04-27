@@ -1,204 +1,372 @@
 #!/bin/sh
-# Script (purge-nvda.sh) by mac_editor @ egpu.io (mayankk2308@gmail.com)
-# Version: 1.4.0
 
-# Parameter(s)
-operation="$1"
+# purge-nvda.sh
+# Author(s): Mayank Kumar (mayankk2308, github.com / mac_editor, egpu.io)
+# License: Specified in LICENSE.md.
+# Version: 2.0.0
 
-# Backup directory and environment
-backup_dir="/Library/Application Support/Purge-NVDA/"
-final_message=""
+# Re-written for scalability and better user interaction.
 
-# Check superuser access
-check_sudo()
+# ----- COMMAND LINE ARGS
+
+# Setup command args
+SCRIPT=""
+OPTION=""
+
+if [[ "$0" == "sh" ]]
+then
+  SCRIPT="$1"
+  OPTION="$2"
+else
+  SCRIPT="$0"
+  OPTION="$1"
+fi
+
+# ----- ENVIRONMENT
+
+# Script binary
+SCRIPT_BIN="/usr/local/bin/purge-nvda"
+
+# Script version
+SCRIPT_VER="2.0.0"
+
+# User input
+INPUT=""
+
+# Text management
+BOLD=`tput bold`
+NORMAL=`tput sgr0`
+
+# Errors
+SIP_ON_ERR=1
+MACOS_VER_ERR=2
+
+# Arg-Function Map
+p=1
+s=2
+n=3
+c=4
+u=5
+h=6
+v=7
+b=8
+y=9
+r=10
+q=11
+
+# Input-Function map
+IF["$p"]="purge_nv"
+IF["$s"]="suppress_nv"
+IF["$n"]="update_nvram"
+IF["$c"]="check_system_status"
+IF["$u"]="uninstall"
+IF["$h"]="usage"
+IF["$v"]="show_script_version"
+IF["$b"]="disable_hibernation"
+IF["$y"]="enable_hibernation"
+IF["$r"]="reboot"
+IF["$q"]="quit"
+
+# System information
+MACOS_VER=`sw_vers -productVersion`
+MACOS_BUILD=`sw_vers -buildVersion`
+
+# Kext Paths
+SYS_KEXTS="/System/Library/Extensions/"
+GEF_KEXTS="${SYS_KEXTS}GeForce*.*"
+
+# Backup Locations
+SUPPORT_DIR="/Library/Application Support/Purge-NVDA/"
+
+# NVRAM IG+DG Variables
+NV_GUID="fa4ce28d-b62f-4c99-9cc3-6815686e30f9"
+IG_POWER_PREF="%01%00%00%00"
+DG_POWER_PREF="%00%00%00%00"
+IG_BOOT_ARG="nv_disable=1"
+
+# Patch status
+IG_PATCH_STATUS=""
+NV_PATCH_STATUS=""
+
+# ----- SYSTEM CONFIGURATION MANAGER
+
+# Elevate privileges
+elevate_privileges()
 {
-  if [[ "$(id -u)" != 0 ]]
+  if [[ `id -u` != 0 ]]
   then
-    echo "This script requires superuser access. Please run with 'sudo'.\n"
-    exit
+    sudo "$SCRIPT" "$OPTION"
+    exit 0
   fi
 }
 
-# Check system integrity protection
-check_sys_integrity_protection()
+# System integrity protection check
+check_sip()
 {
-  if [[ `csrutil status | grep -i "enabled"` ]]
+  if [[ `csrutil status | grep -i enabled` ]]
   then
-    echo "
-    System Integrity Protection needs to be disabled before proceeding.
-
-    Boot into recovery, launch Terminal and execute: 'csrutil disable'\n"
-    exit
+    echo "System Integrity Protection needs to be disabled before proceeding.\n"
+    exit $SIP_ON_ERR
   fi
 }
 
-# Check macOS version
+# macOS Version check
 check_macos_version()
 {
-  macos_ver=`sw_vers -productVersion`
-  if [[ "$macos_ver" == "10.13" ||  "$macos_ver" == "10.13.1" || "$macos_ver" == "10.13.2" || "$macos_ver" == "10.13.3" ]]
+  MACOS_MAJOR_VER=`echo $MACOS_VER | cut -d '.' -f2`
+  MACOS_MINOR_VER=`echo $MACOS_VER | cut -d '.' -f3`
+  if [[ ("$MACOS_MAJOR_VER" < 13) || ("$MACOS_MAJOR_VER" == 13 && "$MACOS_MINOR_VER" < 4) ]]
   then
-    echo "
-    This version of macOS will not support external AMD graphics.
-
-    If you wish to only suppress the dGPU - use the 'suppress-only' option.
-
-    Additionally, due to problems with kernel caching, it is recommended to
-
-    run this script in Single User Mode for this version of macOS.\n"
-    exit
+    echo "\nThis script requires ${BOLD}macOS 10.13.4${NORMAL} or later.\n"
+    exit $MACOS_VER_ERR
   fi
 }
 
-# Script help
-usage()
+check_patch()
 {
-  echo "
-  Usage:
-
-    ./purge-nvda.sh [param]
-
-    You can use one of the following parameters:
-
-        No arguments: Suppresses dGPU + supports AMD eGPUs.
-
-        suppress-only: Suppresses dGPU.
-
-        nvram-only: Only updates the NVRAM for iGPU-only mode.
-
-        uninstall: Restores system to pre-purge state.
-
-        help: Displays usage information."
-}
-
-# Rebuild kernel cache
-invoke_kext_caching()
-{
-  echo "Rebuilding kext cache..."
-  touch /System/Library/Extensions
-  kextcache -q -update-volume /
-  echo "Complete.\n"
-}
-
-# Patch NVRAM
-update_nvram()
-{
-  flag="$1"
-  echo "Updating NVRAM..."
-  nvram fa4ce28d-b62f-4c99-9cc3-6815686e30f9:gpu-power-prefs=%01%00%00%00
-  nvram fa4ce28d-b62f-4c99-9cc3-6815686e30f9:gpu-active=%01%00%00%00
-  if [[ "$flag" == "true" ]]
+  if [[ `nvram boot-args | grep -i nv_disable=1` ]]
   then
-    nvram boot-args="nv_disable=1"
-  fi
-  final_message="iGPU will be preferred on next boot, and on subsequent boots if dGPU drivers are unavailable.\n"
-  echo "Complete.\n"
-}
-
-# Unpatch NVRAM
-restore_nvram()
-{
-  echo "Restoring NVRAM..."
-  nvram -d fa4ce28d-b62f-4c99-9cc3-6815686e30f9:gpu-power-prefs
-  nvram -d fa4ce28d-b62f-4c99-9cc3-6815686e30f9:gpu-active
-  nvram boot-args=""
-  echo "Complete.\n"
-}
-
-# Move NVIDIA drivers to backup directory
-move_nvda_drv()
-{
-  mkdir -p "$backup_dir"
-  if [[ "$(ls /System/Library/Extensions/ | grep NVDA)" && "$(ls /System/Library/Extensions/ | grep GeForce)" ]]
-  then
-    echo "Moving NVIDIA drivers..."
-    if [[ "$(ls "$backup_dir")" ]]
-    then
-      rm -r "$backup_dir"*
-    fi
-    mv /System/Library/Extensions/NVDA*.kext "$backup_dir"
-    mv /System/Library/Extensions/GeForce*.* "$backup_dir"
-    echo "Complete.\n"
+    NV_PATCH_STATUS=1
   else
-    echo "Some/all required kexts already moved. No action taken.\n"
-    exit
+    NV_PATCH_STATUS=0
   fi
-}
-
-# Restore NVIDIA drivers for macOS use
-restore_nvda_drv()
-{
-  echo "Restoring NVIDIA drivers..."
-  rsync -r -u "$backup_dir"* /System/Library/Extensions/
-  echo "Complete.\n"
-}
-
-# Primary uninstall procedure
-uninstall()
-{
-  restore_nvram
-  if [[ -d "$backup_dir" ]]
+  if [[ `nvram "${NV_GUID}:gpu-power-prefs" | grep -i "${IG_POWER_PREF}"` ]]
   then
-    restore_nvda_drv
-    invoke_kext_caching
-    echo "Uninstalling..."
-    rm -r "$backup_dir"
-    final_message="Uninstallation complete.\n"
+    IG_PATCH_STATUS=1
   else
-    final_message="Kexts were not backed up. NVRAM was restored.\n"
+    IG_PATCH_STATUS=0
   fi
+}
+
+check_system_status()
+{
+  echo "\n>> ${BOLD}System Status${NORMAL}\n"
+  if [[ "$NV_PATCH_STATUS" == 0 ]]
+  then
+    echo "${BOLD}NVIDIA Purge${NORMAL}: Not Detected"
+  else
+    echo "${BOLD}NVIDIA NVRAM Purge${NORMAL}: Detected"
+  fi
+  if [[ "$IG_PATCH_STATUS" == 0 ]]
+  then
+    echo "${BOLD}IGPU Forced${NORMAL}: Not Detected\n"
+  else
+    echo "${BOLD}IGPU Forced${NORMAL}: Detected\n"
+  fi
+}
+
+# Cumulative system check
+perform_sys_check()
+{
+  check_sip
+  check_macos_version
+  elevate_privileges
+  check_patch
+}
+
+# ----- OS MANAGEMENT
+
+# Reboot sequence/message
+prompt_reboot()
+{
+  echo "${BOLD}System ready.${NORMAL} Restart now to apply changes.\n"
 }
 
 # Reboot sequence
 initiate_reboot()
 {
+  echo
   for time in {5..0}
   do
-    printf "Restarting in $time s (Recommended)...\r"
+    printf "Restarting in ${BOLD}${time}s${NORMAL}...\r"
     sleep 1
   done
   reboot
 }
 
-# Primary purge procedure
-proceed_purge()
+# Disable hibernation
+disable_hibernation()
 {
-  flag="$1"
-  update_nvram "$flag"
-  final_message="Your mac will now behave as an iGPU-only device.\n"
-  if [[ "$flag" == "false" ]]
+  echo "\n>> ${BOLD}Disable Hibernation${NORMAL}\n"
+  echo "${BOLD}Disabling hibernation...${NORMAL}"
+  pmset -a autopoweroff 0
+  pmset -a standby 0
+  pmset -a hibernatemode 0
+  echo "Hibernation disabled.\n"
+}
+
+# Revert hibernation settings
+enable_hibernation()
+{
+  echo "\n>> ${BOLD}Enable Hibernation${NORMAL}\n"
+  echo "${BOLD}Enabling hibernation...${NORMAL}"
+  pmset -a autopoweroff 1
+  pmset -a standby 1
+  pmset -a hibernatemode 3
+  echo "Hibernation enabled.\n"
+}
+
+# Rebuild kernel cache
+invoke_kext_caching()
+{
+  echo "${BOLD}Rebuilding kext cache...${NORMAL}"
+  touch "$EXT_PATH"
+  kextcache -q -update-volume /
+  echo "Rebuild complete."
+}
+
+# ----- RECOVERY SYSTEM
+
+# Bin management procedure
+install_bin()
+{
+  rsync "$SCRIPT_FILE" "$SCRIPT_BIN"
+  chown $(whoami):everyone "$SCRIPT_BIN"
+  chmod 700 "$SCRIPT_BIN"
+  chflags nouchg "$SCRIPT_BIN"
+  chmod a+x "$SCRIPT_BIN"
+}
+
+# Bin first-time setup
+first_time_setup()
+{
+  if [[ "$SCRIPT" == "$SCRIPT_BIN" || "$SCRIPT" == "purge-nvda" ]]
   then
-    invoke_kext_caching
+    return 0
+  fi
+  SCRIPT_FILE="$(pwd)/$(echo "$SCRIPT")"
+  if [[ "$SCRIPT" == "$0" ]]
+  then
+    SCRIPT_FILE="$(echo "$SCRIPT_FILE" | cut -c 1-)"
+  fi
+  SCRIPT_SHA=`shasum -a 512 -b "$SCRIPT_FILE" | awk '{ print $1 }'`
+  if [[ ! -s "$SCRIPT_BIN" ]]
+  then
+    echo "\n>> ${BOLD}System Management${NORMAL}\n"
+    echo "${BOLD}Creating binary...${NORMAL}"
+    install_bin
+    echo "Binary installed. ${BOLD}'purge-nvda'${NORMAL} command now available. ${BOLD}Proceeding...${NORMAL}\n"
+    sleep 2
+    return 0
+  fi
+  BIN_SHA=`shasum -a 512 -b "$SCRIPT_BIN" | awk '{ print $1 }'`
+  if [[ "$BIN_SHA" != "$SCRIPT_SHA" ]]
+  then
+    echo "\n>> ${BOLD}System Management${NORMAL}\n"
+    echo "${BOLD}Updating binary...${NORMAL}"
+    rm "$SCRIPT_BIN"
+    install_bin
+    echo "Binary updated. ${BOLD}Proceeding...${NORMAL}\n"
+    sleep 2
   fi
 }
 
-# Hard checks
-check_sudo
-check_sys_integrity_protection
+# ----- USER INTERFACE
 
-# Option management
-if [[ "$operation" == "" ]]
-then
-  check_macos_version
-  proceed_purge "true"
-elif [[ "$operation" == "suppress-only" ]]
-then
-  move_nvda_drv
-  proceed_purge "false"
-elif [[ "$operation" == "nvram-only" ]]
-then
-  update_nvram
-elif [[ "$operation" == "uninstall" ]]
-then
-  uninstall
-elif [[ "$operation" == "help" ]]
-then
-  usage
-  exit
-else
-  echo "Invalid argument. Use the 'help' option for usage information.\n"
-  exit
-fi
+# Exit script
+quit()
+{
+  echo "\n${BOLD}Later then${NORMAL}. Buh bye!\n"
+  exit 0
+}
 
-echo "$final_message"
-initiate_reboot
+# Print script version
+show_script_version()
+{
+  echo "\nScript at ${BOLD}${SCRIPT_VER}${NORMAL}.\n"
+}
+
+# Print command line options
+usage()
+{
+  echo "\n>> ${BOLD}Command Line Shortcuts${NORMAL}\n"
+  echo " purge-nvda ${BOLD}-[p s n c b y v h r q]${NORMAL}"
+  echo "
+    ${BOLD}-p${NORMAL}: Enable AMD eGPUs
+    ${BOLD}-s${NORMAL}: Suppress NVIDIA GPUs
+    ${BOLD}-n${NORMAL}: Force Single iGPU Boot
+    ${BOLD}-c${NORMAL}: System Status
+    ${BOLD}-u${NORMAL}: Uninstall
+    ${BOLD}-h${NORMAL}: Command-Line Shortcuts
+    ${BOLD}-v${NORMAL}: Script Version
+    ${BOLD}-b${NORMAL}: Disable Hibernation
+    ${BOLD}-y${NORMAL}: Enable Hibernation
+    ${BOLD}-r${NORMAL}: Reboot
+    ${BOLD}-q${NORMAL}: Quit
+    "
+}
+
+# Input processing
+process_input()
+{
+  ARG="$1"
+  if [[ ! $ARG =~ ^[0-9]+$ || $ARG -le 0 || $ARG -ge 12 ]]
+  then
+    echo "\nInvalid option. Try again."
+    provide_menu_selection
+    return
+  fi
+  "${IF[${ARG}]}"
+}
+
+# Menu bypass
+process_arg_bypass()
+{
+  if [[ "$OPTION" ]]
+  then
+    OPTION=`echo $OPTION | head -c 2 | tail -c 1`
+    eval OPTION="${!OPTION}"
+    process_input "$OPTION"
+    exit 0
+  fi
+}
+
+# Ask for main menu
+ask_menu()
+{
+  read -p "${BOLD}Back to menu?${NORMAL} [Y/N]: " INPUT
+  if [[ "$INPUT" == "Y" || "$INPUT" == "y" ]]
+  then
+    perform_sys_check
+    echo "\n>> ${BOLD}PurgeNVDA ($SCRIPT_VER)${NORMAL}"
+    provide_menu_selection
+  fi
+  echo
+  exit 0
+}
+
+# Menu
+provide_menu_selection()
+{
+  echo "
+   ${BOLD}>> Patching System${NORMAL}               ${BOLD}>> System Status & Recovery${NORMAL}
+   ${BOLD}1.${NORMAL}  Enable AMD eGPUs             ${BOLD}4.${NORMAL}  System Status
+   ${BOLD}2.${NORMAL}  Suppress NVIDIA GPUs         ${BOLD}5.${NORMAL}  Uninstall
+   ${BOLD}3.${NORMAL}  Force Single iGPU Boot
+
+   ${BOLD}>> Additional Options${NORMAL}            ${BOLD}>> System Sleep Configuration${NORMAL}
+   ${BOLD}6.${NORMAL}  Command-Line Shortcuts       ${BOLD}8.${NORMAL}  Disable Hibernation
+   ${BOLD}7.${NORMAL}  Script Version               ${BOLD}9.${NORMAL}  Enable Hibernation
+
+   ${BOLD}10.${NORMAL} Reboot System
+   ${BOLD}11.${NORMAL} Quit
+  "
+  read -p "${BOLD}What next?${NORMAL} [1-11]: " INPUT
+  process_input "$INPUT"
+  ask_menu
+}
+
+# ----- SCRIPT DRIVER
+
+# Primary execution routine
+begin()
+{
+  first_time_setup
+  perform_sys_check
+  process_arg_bypass
+  clear
+  echo ">> ${BOLD}PurgeNVDA ($SCRIPT_VER)${NORMAL}"
+  provide_menu_selection
+}
+
+begin
