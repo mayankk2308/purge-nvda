@@ -12,6 +12,7 @@
 # Setup command args
 SCRIPT=""
 OPTION=""
+echo "$BASH_SOURCE"
 
 if [[ "$0" == "sh" ]]
 then
