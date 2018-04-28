@@ -73,10 +73,10 @@ MACOS_BUILD=`sw_vers -buildVersion`
 
 # Kext Paths
 SYS_KEXTS="/System/Library/Extensions/"
-GEF_KEXTS="${SYS_KEXTS}GeForce*.*"
+GEF_KEXTS="${SYS_KEXTS}GeForce"
 
 # Backup Locations
-SUPPORT_DIR="/Library/Application Support/Purge-NVDA/"
+BACKUP_DIR="/Library/Application Support/Purge-NVDA/"
 
 # NVRAM IG+DG Variables
 NV_GUID="fa4ce28d-b62f-4c99-9cc3-6815686e30f9"
@@ -210,12 +210,100 @@ enable_hibernation()
 invoke_kext_caching()
 {
   echo "${BOLD}Rebuilding kext cache...${NORMAL}"
-  touch "$EXT_PATH"
+  touch "$SYS_KEXTS"
   kextcache -q -update-volume /
   echo "Rebuild complete."
 }
 
+# ----- NVIDIA KEXT MANAGER
+
+# GeForce Kext removal/shift
+move_nvda_drv()
+{
+  mkdir -p "$BACKUP_DIR"
+  if [[ "$(ls /System/Library/Extensions/ | grep GeForce)" ]]
+  then
+    echo "${BOLD}Moving NVIDIA GeForce drivers...${NORMAL}"
+    if [[ "$(ls "$BACKUP_DIR")" ]]
+    then
+      rm -r "$BACKUP_DIR"*
+    fi
+    mv "$GEF_KEXTS"*.* "$BACKUP_DIR"
+    echo "Move complete."
+    invoke_kext_caching
+  else
+    echo "Required kexts already moved. No action taken.\n"
+  fi
+}
+
+restore_nvda_drv()
+{
+  if [[ ! -d "${BACKUP_DIR}GeForce.kext" ]]
+  then
+    return 0
+  fi
+  echo "${BOLD}Restoring NVIDIA drivers...${NORMAL}"
+  rsync -r -u "$BACKUP_DIR"* "$SYS_KEXTS"
+  echo "Complete."
+}
+
+# ----- NVRAM MANAGER
+
+# iGPU-only NVRAM Update
+update_nvram()
+{
+  echo "\n${BOLD}>> Force Single iGPU Boot${NORMAL}\n"
+  echo "${BOLD}Updating NVRAM...${NORMAL}"
+  nvram "${NV_GUID}:gpu-power-prefs"="$DG_POWER_PREF"
+  echo "Update complete.\n"
+}
+
+# Restore NVRAM to previous state
+restore_nvram()
+{
+  echo "${BOLD}Restoring NVRAM...${NORMAL}"
+  nvram boot-args=""
+  nvram "${NV_GUID}:gpu-power-prefs"="$DG_POWER_PREF"
+  echo "Restore complete."
+}
+
+# Complete NVRAM kextless NVIDIA purge
+purge_nv()
+{
+  echo "\n${BOLD}>> Enable AMD eGPUs${NORMAL}\n"
+  echo "${BOLD}Patching NVRAM...${NORMAL}"
+  nvram boot-args="${IG_BOOT_ARG}"
+  nvram "${NV_GUID}:gpu-power-prefs"="$IG_POWER_PREF"
+  echo "Patch complete.\n"
+}
+
+# NVIDIA GPU Suppress-Only
+suppress_nv()
+{
+  echo "\n${BOLD}>> Suppress NVIDIA GPUs${NORMAL}\n"
+  echo "${BOLD}Patching NVRAM...${NORMAL}"
+  nvram "${NV_GUID}:gpu-power-prefs"="$IG_POWER_PREF"
+  move_nvda_drv
+  echo "Patch complete.\n"
+}
+
 # ----- RECOVERY SYSTEM
+
+uninstall()
+{
+  echo "\n${BOLD}>> Uninstall${NORMAL}\n"
+  echo "${BOLD}Uninstalling...${NORMAL}"
+  restore_nvram
+  if [[ -d "$BACKUP_DIR" ]]
+  then
+    restore_nvda_drv
+    invoke_kext_caching
+    rm -r "$BACKUP_DIR"
+  fi
+  echo "Uninstallation complete.\n"
+}
+
+# ----- BINARY MANAGER
 
 # Bin management procedure
 install_bin()
