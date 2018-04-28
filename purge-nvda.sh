@@ -322,7 +322,12 @@ first_time_setup()
   then
     return 0
   fi
-  SCRIPT_FILE="$(pwd)/$(echo "$SCRIPT")"
+  PREPEND="$(pwd)/"
+  if [[ `echo "$SCRIPT" | grep -i /dev`  ]]
+  then
+    PREPEND=""
+  fi
+  SCRIPT_FILE="${PREPEND}$(echo "$SCRIPT")"
   if [[ "$SCRIPT" == "$0" ]]
   then
     SCRIPT_FILE="$(echo "$SCRIPT_FILE" | cut -c 1-)"
