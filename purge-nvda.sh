@@ -10,16 +10,13 @@
 # ----- COMMAND LINE ARGS
 
 # Setup command args
-SCRIPT=""
+SCRIPT="$BASH_SOURCE"
 OPTION=""
-echo "$BASH_SOURCE"
 
 if [[ "$0" == "sh" ]]
 then
-  SCRIPT="$1"
   OPTION="$2"
 else
-  SCRIPT="$0"
   OPTION="$1"
 fi
 
