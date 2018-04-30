@@ -22,9 +22,9 @@ $ reboot
 ```
 
 ### Step 2
-Boot back into macOS and copy-paste the following into **Terminal**:
+Boot back into macOS and download [purge-nvda.sh](https://github.com/mayankk2308/purge-nvda/releases). Then run the following in **Terminal**:
 ```bash
-$ cd /path/to/script/
+$ cd Downloads
 $ chmod +x purge-nvda.sh
 $ ./purge-nvda.sh
 ```
