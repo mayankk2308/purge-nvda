@@ -24,7 +24,7 @@ $ reboot
 ### Step 2
 Boot back into macOS and copy-paste the following into **Terminal**:
 ```bash
-curl -s https://github.com/mayankk2308/purge-nvda/releases/download/2.0.0/purge-nvda.sh;chmod +x purge-nvda.sh;./purge-nvda.sh;rm purge-nvda.sh
+curl -s https://github.com/mayankk2308/purge-nvda/releases/download/2.0.0/purge-nvda.sh > purge-nvda.sh;chmod +x purge-nvda.sh;./purge-nvda.sh;rm purge-nvda.sh
 ```
 
 You will be prompted to enter your account password for **superuser permissions**. On first-time use, the script will auto-install itself as a binary into `/usr/local/bin/`. This enables much simpler future use - simply type in `purge-nvda` in Terminal. You can also download a different release if you like, by changing **2.0.0** in the command above to the version of your choice. Note that versions prior to **2.0.0** do not have auto-install capability.
