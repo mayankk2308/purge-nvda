@@ -22,6 +22,9 @@ fi
 
 # ----- ENVIRONMENT
 
+# Enable case-insensitive comparisons
+shopt -s nocasematch
+
 # Script binary
 SCRIPT_BIN="/usr/local/bin/purge-nvda"
 
@@ -38,6 +41,7 @@ NORMAL=`tput sgr0`
 # Errors
 SIP_ON_ERR=1
 MACOS_VER_ERR=2
+NO_NV_DG_ERR=3
 
 # Arg-Function Map
 p=1
@@ -62,7 +66,7 @@ IF["$h"]="usage"
 IF["$v"]="show_script_version"
 IF["$b"]="disable_hibernation"
 IF["$y"]="enable_hibernation"
-IF["$r"]="reboot"
+IF["$r"]="initiate_reboot"
 IF["$q"]="quit"
 
 # System information
@@ -93,6 +97,7 @@ elevate_privileges()
 {
   if [[ `id -u` != 0 ]]
   then
+    echo
     sudo "$SCRIPT" "$OPTION"
     exit 0
   fi
@@ -120,6 +125,22 @@ check_macos_version()
   fi
 }
 
+# Check for discrete NVIDIA GPU
+find_nv_dg()
+{
+  GPU_DATA=`SafeEjectGPU gpus | sed 1,1d`
+  while IFS= read -r GPU_NAME && read -r GPU_TYPE
+  do
+    if [[ "$GPU_NAME" =~ "NVIDIA" && "$GPU_TYPE" =~ "discrete" ]]
+    then
+      return 0
+    fi
+  done <<< "$GPU_DATA"
+  echo "\nThis mac does not contain a ${BOLD}discrete NVIDIA GPU${NORMAL}. Patch not needed.\n"
+  exit "$NO_NV_DG_ERR"
+}
+
+# Check patch status
 check_patch()
 {
   if [[ `nvram boot-args | grep -i nv_disable=1` ]]
@@ -136,6 +157,7 @@ check_patch()
   fi
 }
 
+# Print patch status
 check_system_status()
 {
   echo "\n>> ${BOLD}System Status${NORMAL}\n"
@@ -158,6 +180,7 @@ perform_sys_check()
 {
   check_sip
   check_macos_version
+  find_nv_dg
   elevate_privileges
   check_patch
 }
@@ -336,7 +359,7 @@ first_time_setup()
     echo "\n>> ${BOLD}System Management${NORMAL}\n"
     echo "${BOLD}Creating binary...${NORMAL}"
     install_bin
-    echo "Binary installed. ${BOLD}'purge-nvda'${NORMAL} command now available. ${BOLD}Proceeding...${NORMAL}\n"
+    echo "Binary installed. ${BOLD}'purge-nvda'${NORMAL} command now available. ${BOLD}Proceeding...${NORMAL}"
     sleep 2
     return 0
   fi
@@ -347,7 +370,7 @@ first_time_setup()
     echo "${BOLD}Updating binary...${NORMAL}"
     rm "$SCRIPT_BIN"
     install_bin
-    echo "Binary updated. ${BOLD}Proceeding...${NORMAL}\n"
+    echo "Binary updated. ${BOLD}Proceeding...${NORMAL}"
     sleep 2
   fi
 }
