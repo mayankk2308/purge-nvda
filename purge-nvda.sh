@@ -88,6 +88,7 @@ IG_BOOT_ARG="nv_disable=1"
 
 # Patch status
 IG_PATCH_STATUS=""
+GE_PATCH_STATUS=""
 NV_PATCH_STATUS=""
 
 # ----- SYSTEM CONFIGURATION MANAGER
@@ -97,7 +98,6 @@ elevate_privileges()
 {
   if [[ `id -u` != 0 ]]
   then
-    echo
     sudo "$SCRIPT" "$OPTION"
     exit 0
   fi
@@ -128,6 +128,10 @@ check_macos_version()
 # Check for discrete NVIDIA GPU
 find_nv_dg()
 {
+  if [[ "$GE_PATCH_STATUS" == 1 || "$NV_PATCH_STATUS" == 1 ]]
+  then
+    return 0
+  fi
   GPU_DATA=`SafeEjectGPU gpus | sed 1,1d`
   while IFS= read -r GPU_NAME && read -r GPU_TYPE
   do
@@ -149,6 +153,12 @@ check_patch()
   else
     NV_PATCH_STATUS=0
   fi
+  if [[ -d "${BACKUP_DIR}GeForce.kext" ]]
+  then
+    GE_PATCH_STATUS=1
+  else
+    GE_PATCH_STATUS=0
+  fi
   if [[ `nvram "${NV_GUID}:gpu-power-prefs" | grep -i "${IG_POWER_PREF}"` ]]
   then
     IG_PATCH_STATUS=1
@@ -163,9 +173,15 @@ check_system_status()
   echo "\n>> ${BOLD}System Status${NORMAL}\n"
   if [[ "$NV_PATCH_STATUS" == 0 ]]
   then
-    echo "${BOLD}NVIDIA Purge${NORMAL}: Not Detected"
+    echo "${BOLD}AMD eGPU Patch${NORMAL}: Not Detected"
   else
-    echo "${BOLD}NVIDIA NVRAM Purge${NORMAL}: Detected"
+    echo "${BOLD}AMD eGPU Patch${NORMAL}: Detected"
+  fi
+  if [[ "$GE_PATCH_STATUS" == 0 ]]
+  then
+    echo "${BOLD}NVIDIA Suppression${NORMAL}: Not Detected"
+  else
+    echo "${BOLD}NVIDIA Suppression${NORMAL}: Detected"
   fi
   if [[ "$IG_PATCH_STATUS" == 0 ]]
   then
@@ -180,9 +196,9 @@ perform_sys_check()
 {
   check_sip
   check_macos_version
-  find_nv_dg
   elevate_privileges
   check_patch
+  find_nv_dg
 }
 
 # ----- OS MANAGEMENT
@@ -265,7 +281,7 @@ restore_nvda_drv()
   fi
   echo "${BOLD}Restoring NVIDIA drivers...${NORMAL}"
   rsync -r -u "$BACKUP_DIR"* "$SYS_KEXTS"
-  echo "Complete."
+  echo "Restore Complete."
 }
 
 # ----- NVRAM MANAGER
@@ -292,6 +308,12 @@ restore_nvram()
 purge_nv()
 {
   echo "\n${BOLD}>> Enable AMD eGPUs${NORMAL}\n"
+  if [[ "$GE_PATCH_STATUS" == 1 ]]
+  then
+    restore_nvda_drv
+    invoke_kext_caching
+    rm -r "$BACKUP_DIR"
+  fi
   echo "${BOLD}Patching NVRAM...${NORMAL}"
   nvram boot-args="${IG_BOOT_ARG}"
   nvram "${NV_GUID}:gpu-power-prefs"="$IG_POWER_PREF"
@@ -303,6 +325,7 @@ suppress_nv()
 {
   echo "\n${BOLD}>> Suppress NVIDIA GPUs${NORMAL}\n"
   echo "${BOLD}Patching NVRAM...${NORMAL}"
+  nvram boot-args=""
   nvram "${NV_GUID}:gpu-power-prefs"="$IG_POWER_PREF"
   move_nvda_drv
   echo "Patch complete.\n"
