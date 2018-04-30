@@ -29,7 +29,7 @@ $ chmod +x purge-nvda.sh
 $ ./purge-nvda.sh
 ```
 
-You will be prompted to enter your account password for **superuser permissions**. On first-time use, the script will auto-install itself as a binary into `/usr/local/bin/`. This enables much simpler future use - simply type in `purge-nvda` in Terminal. You can also download a different release if you like, by changing **2.0.0** in the command above to the version of your choice. Note that versions prior to **2.0.0** do not have auto-install capability.
+You will be prompted to enter your account password for **superuser permissions**. On first-time use, the script will auto-install itself as a binary into `/usr/local/bin/`. This enables much simpler future use - simply type in `purge-nvda` in Terminal. Note that versions prior to **2.0.0** do not have auto-install capability.
 
 ## Options
 The script provides users with a variety of options in an attempt to be as user-friendly as possible.
