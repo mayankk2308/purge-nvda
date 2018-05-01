@@ -3,7 +3,7 @@
 # purge-nvda.sh
 # Author(s): Mayank Kumar (mayankk2308, github.com / mac_editor, egpu.io)
 # License: Specified in LICENSE.md.
-# Version: 2.0.0
+# Version: 2.0.1
 
 # Re-written for scalability and better user interaction.
 
@@ -29,7 +29,7 @@ shopt -s nocasematch
 SCRIPT_BIN="/usr/local/bin/purge-nvda"
 
 # Script version
-SCRIPT_VER="2.0.0"
+SCRIPT_VER="2.0.1"
 
 # User input
 INPUT=""
@@ -132,14 +132,22 @@ find_nv_dg()
   then
     return 0
   fi
-  GPU_DATA=`SafeEjectGPU gpus | sed 1,1d`
-  while IFS= read -r GPU_NAME && read -r GPU_TYPE
+  GPU_VENDORS=`system_profiler SPDisplaysDataType | grep -i vendor`
+  if [[ ! "$GPU_VENDORS" ]]
+  then
+    return 0
+  fi
+  GPU_TYPES=`system_profiler SPDisplaysDataType | grep -i type | grep -v -i display`
+  NUM_GPUS=`echo "$GPU_VENDORS" | wc -l`
+  for ((i=1; i<="$NUM_GPUS"; i++))
   do
-    if [[ "$GPU_NAME" =~ "NVIDIA" && "$GPU_TYPE" =~ "discrete" ]]
+    VENDOR=`echo "$GPU_VENDORS" | sed ""$i"q;d" | cut -d ":" -f2 | awk '{$1=$1};1'`
+    GPU_TYPE=`echo "$GPU_TYPES" | sed ""$i"q;d" | cut -d ":" -f2 | awk '{$1=$1};1'`
+    if [[ "$VENDOR" =~ "NVIDIA" && "$GPU_TYPE" == "GPU" ]]
     then
       return 0
     fi
-  done <<< "$GPU_DATA"
+  done
   echo "\nThis mac does not contain a ${BOLD}discrete NVIDIA GPU${NORMAL}. Patch not needed.\n"
   exit "$NO_NV_DG_ERR"
 }
@@ -147,7 +155,7 @@ find_nv_dg()
 # Check patch status
 check_patch()
 {
-  if [[ `nvram boot-args | grep -i nv_disable=1` ]]
+  if [[ `nvram boot-args 2>&1 | grep -i nv_disable=1` ]]
   then
     NV_PATCH_STATUS=1
   else
@@ -159,7 +167,7 @@ check_patch()
   else
     GE_PATCH_STATUS=0
   fi
-  if [[ `nvram "${NV_GUID}:gpu-power-prefs" | grep -i "${IG_POWER_PREF}"` ]]
+  if [[ `nvram "${NV_GUID}:gpu-power-prefs" 2>&1 | grep -i "${IG_POWER_PREF}"` ]]
   then
     IG_PATCH_STATUS=1
   else
@@ -366,12 +374,7 @@ first_time_setup()
   then
     return 0
   fi
-  PREPEND="$(pwd)/"
-  if [[ `echo "$SCRIPT" | grep -i /dev`  ]]
-  then
-    PREPEND=""
-  fi
-  SCRIPT_FILE="${PREPEND}$(echo "$SCRIPT")"
+  SCRIPT_FILE="$(pwd)/$(echo "$SCRIPT")"
   if [[ "$SCRIPT" == "$0" ]]
   then
     SCRIPT_FILE="$(echo "$SCRIPT_FILE" | cut -c 1-)"
