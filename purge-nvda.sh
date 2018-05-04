@@ -13,7 +13,7 @@
 SCRIPT="$BASH_SOURCE"
 OPTION=""
 
-if [[ "$0" == "sh" ]]
+if [[ "$0" != "$SCRIPT" ]]
 then
   OPTION="$2"
 else
@@ -108,7 +108,7 @@ check_sip()
 {
   if [[ `csrutil status | grep -i enabled` ]]
   then
-    echo "System Integrity Protection needs to be disabled before proceeding.\n"
+    echo "\nSystem Integrity Protection needs to be disabled before proceeding.\n"
     exit $SIP_ON_ERR
   fi
 }
@@ -361,9 +361,8 @@ uninstall()
 install_bin()
 {
   rsync "$SCRIPT_FILE" "$SCRIPT_BIN"
-  chown $(whoami):everyone "$SCRIPT_BIN"
+  chown "$SUDO_USER" "$SCRIPT_BIN"
   chmod 700 "$SCRIPT_BIN"
-  chflags nouchg "$SCRIPT_BIN"
   chmod a+x "$SCRIPT_BIN"
 }
 
@@ -501,8 +500,8 @@ provide_menu_selection()
 # Primary execution routine
 begin()
 {
-  first_time_setup
   perform_sys_check
+  first_time_setup
   process_arg_bypass
   clear
   echo ">> ${BOLD}PurgeNVDA ($SCRIPT_VER)${NORMAL}"
