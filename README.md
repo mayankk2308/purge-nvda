@@ -5,9 +5,9 @@ A simple script for Macs that purges the activation of the discrete **NVIDIA** G
 ## Requirements
 This script requires the following specifications:
 * Mac with integrated Intel GPU + discrete **NVIDIA** GPU
-* **macOS Mavericks** or later
+* **macOS 10.13.4** or later
 
-For AMD eGPU support please use **macOS 10.13.4 or later** along with [purge-wrangler.sh](https://github.com/mayankk2308/purge-wrangler/releases).
+For AMD eGPU support please use along with [purge-wrangler.sh](https://github.com/mayankk2308/purge-wrangler/releases).
 
 It is recommended that you have a backup of the system. Testing was done on a **Mid-2014 MacBook Pro w/ GeForce GT 750M**.
 
