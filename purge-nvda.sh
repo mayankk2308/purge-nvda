@@ -3,7 +3,7 @@
 # purge-nvda.sh
 # Author(s): Mayank Kumar (mayankk2308, github.com / mac_editor, egpu.io)
 # License: Specified in LICENSE.md.
-# Version: 2.0.1
+# Version: 2.0.2
 
 # Re-written for scalability and better user interaction.
 
@@ -26,10 +26,12 @@ fi
 shopt -s nocasematch
 
 # Script binary
-SCRIPT_BIN="/usr/local/bin/purge-nvda"
+LOCAL_BIN="/usr/local/bin"
+mkdir -p -m 775 "$LOCAL_BIN"
+SCRIPT_BIN="${LOCAL_BIN}/purge-nvda"
 
 # Script version
-SCRIPT_VER="2.0.1"
+SCRIPT_VER="2.0.2"
 
 # User input
 INPUT=""
