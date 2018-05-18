@@ -27,7 +27,7 @@ Boot back into macOS, then copy-paste the following into **Terminal**:
 curl -L -s https://github.com/mayankk2308/purge-nvda/releases/download/2.0.2/purge-nvda.sh > purge-nvda.sh;chmod +x purge-nvda.sh;./purge-nvda.sh;rm purge-nvda.sh
 ```
 
-Note that you may change **2.0.1** to a different valid version in the above command.
+Note that you may change to a different valid version in the above command.
 
 Alternatively, download [purge-nvda.sh](https://github.com/mayankk2308/purge-nvda/releases). Then run the following in **Terminal**:
 ```bash
