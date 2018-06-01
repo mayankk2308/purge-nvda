@@ -3,7 +3,7 @@
 # purge-nvda.sh
 # Author(s): Mayank Kumar (mayankk2308, github.com / mac_editor, egpu.io)
 # License: Specified in LICENSE.md.
-# Version: 2.1.0
+# Version: 2.1.1
 
 # Re-written for scalability and better user interaction.
 
@@ -37,7 +37,7 @@ SCRIPT_FILE=""
 # Script version
 SCRIPT_MAJOR_VER="2"
 SCRIPT_MINOR_VER="1"
-SCRIPT_PATCH_VER="0"
+SCRIPT_PATCH_VER="1"
 SCRIPT_VER="${SCRIPT_MAJOR_VER}.${SCRIPT_MINOR_VER}.${SCRIPT_PATCH_VER}"
 
 # User input
