@@ -3,7 +3,7 @@
 # purge-nvda.sh
 # Author(s): Mayank Kumar (mayankk2308, github.com / mac_editor, egpu.io)
 # License: Specified in LICENSE.md.
-# Version: 2.0.2
+# Version: 2.1.0
 
 # Re-written for scalability and better user interaction.
 
@@ -12,6 +12,8 @@
 # Setup command args
 SCRIPT="$BASH_SOURCE"
 OPTION=""
+LATEST_SCRIPT_INFO=""
+LATEST_RELEASE_DWLD=""
 
 if [[ "$0" != "$SCRIPT" ]]
 then
@@ -29,9 +31,15 @@ shopt -s nocasematch
 LOCAL_BIN="/usr/local/bin"
 mkdir -p -m 775 "$LOCAL_BIN"
 SCRIPT_BIN="${LOCAL_BIN}/purge-nvda"
+TMP_SCRIPT="${LOCAL_BIN}/purge-nvda-new"
+BIN_CALL=0
+SCRIPT_FILE=""
 
 # Script version
-SCRIPT_VER="2.0.2"
+SCRIPT_MAJOR_VER="2"
+SCRIPT_MINOR_VER="1"
+SCRIPT_PATCH_VER="0"
+SCRIPT_VER="${SCRIPT_MAJOR_VER}.${SCRIPT_MINOR_VER}.${SCRIPT_PATCH_VER}"
 
 # User input
 INPUT=""
@@ -46,30 +54,30 @@ MACOS_VER_ERR=2
 NO_NV_DG_ERR=3
 
 # Arg-Function Map
-p=1
-s=2
-n=3
-c=4
-u=5
-h=6
-v=7
-b=8
-y=9
-r=10
-q=11
+enable_amd=1
+suppress_only=2
+mux_igpu=3
+status=4
+uninstall=5
+shortcuts=6
+version=7
+disable_hibernation=8
+restore_sleep=9
+reboot=10
+quit=11
 
 # Input-Function map
-IF["$p"]="purge_nv"
-IF["$s"]="suppress_nv"
-IF["$n"]="update_nvram"
-IF["$c"]="check_system_status"
-IF["$u"]="uninstall"
-IF["$h"]="usage"
-IF["$v"]="show_script_version"
-IF["$b"]="disable_hibernation"
-IF["$y"]="enable_hibernation"
-IF["$r"]="initiate_reboot"
-IF["$q"]="quit"
+IF["${enable_amd}"]="purge_nv"
+IF["${suppress_only}"]="suppress_nv"
+IF["${mux_igpu}"]="update_nvram"
+IF["${status}"]="check_system_status"
+IF["${uninstall}"]="uninstall"
+IF["${shortcuts}"]="usage"
+IF["${version}"]="show_script_version"
+IF["${disable_hibernation}"]="disable_hibernation"
+IF["${restore_sleep}"]="restore_sleep"
+IF["$reboot"]="initiate_reboot"
+IF["$quit"]="quit"
 
 # System information
 MACOS_VER=`sw_vers -productVersion`
@@ -93,7 +101,87 @@ IG_PATCH_STATUS=""
 GE_PATCH_STATUS=""
 NV_PATCH_STATUS=""
 
+# ----- SCRIPT SOFTWARE UPDATE SYSTEM
+
+# Perform software update
+perform_software_update()
+{
+  echo "${BOLD}Downloading...${NORMAL}"
+  curl -L -s "$LATEST_RELEASE_DWLD" > "$TMP_SCRIPT"
+  echo "Download complete."
+  echo "${BOLD}Updating...${NORMAL}"
+  chmod 700 "$TMP_SCRIPT"
+  chmod +x "$TMP_SCRIPT"
+  rm "$SCRIPT"
+  mv "$TMP_SCRIPT" "$SCRIPT"
+  chown "$SUDO_USER" "$SCRIPT"
+  echo "Update complete. ${BOLD}Relaunching...${NORMAL}"
+  sleep 2
+  "$SCRIPT"
+  exit 0
+}
+
+# Prompt for update
+prompt_software_update()
+{
+  read -p "${BOLD}Would you like to update?${NORMAL} [Y/N]: " INPUT
+  if [[ "$INPUT" == "Y" ]]
+  then
+    echo
+    perform_software_update
+  elif [[ "$INPUT" == "N" ]]
+  then
+    echo "\n${BOLD}Proceeding without updating...${NORMAL}"
+    sleep 2
+  else
+    echo "\nInvalid choice. Try again.\n"
+    prompt_software_update
+  fi
+}
+
+# Check Github for newer version + prompt update
+fetch_latest_release()
+{
+  if [[ "$BIN_CALL" == 0 ]]
+  then
+    return 0
+  fi
+  LATEST_SCRIPT_INFO=`curl -s "https://api.github.com/repos/mayankk2308/purge-nvda/releases/latest"`
+  LATEST_RELEASE_VER=`echo "$LATEST_SCRIPT_INFO" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/'`
+  LATEST_RELEASE_DWLD=`echo "$LATEST_SCRIPT_INFO" | grep '"browser_download_url":' | sed -E 's/.*"([^"]+)".*/\1/'`
+  LATEST_MAJOR_VER=`echo "$LATEST_RELEASE_VER" | cut -d '.' -f1`
+  LATEST_MINOR_VER=`echo "$LATEST_RELEASE_VER" | cut -d '.' -f2`
+  LATEST_PATCH_VER=`echo "$LATEST_RELEASE_VER" | cut -d '.' -f3`
+  if [[ $LATEST_MAJOR_VER > $SCRIPT_MAJOR_VER || ($LATEST_MAJOR_VER == $SCRIPT_MAJOR_VER && $LATEST_MINOR_VER > $SCRIPT_MINOR_VER) || ($LATEST_MAJOR_VER == $SCRIPT_MAJOR_VER && $LATEST_MINOR_VER == $SCRIPT_MINOR_VER && $LATEST_PATCH_VER > $SCRIPT_PATCH_VER) && "$LATEST_RELEASE_DWLD" ]]
+  then
+    echo "\n>> ${BOLD}Software Update${NORMAL}"
+    echo "\nA script update (${BOLD}${LATEST_RELEASE_VER}${NORMAL}) is available."
+    echo "You are currently on ${BOLD}${SCRIPT_VER}${NORMAL}."
+    prompt_software_update
+  fi
+}
+
 # ----- SYSTEM CONFIGURATION MANAGER
+
+# Check caller
+validate_caller()
+{
+  if [[ "$1" == "sh" && ! "$2" ]]
+  then
+    echo "\n${BOLD}Invalid manner of execution detected${NORMAL}.\nPlease see the README for instructions.\n"
+    exit $EXEC_ERR
+  fi
+  if [[ "$1" != "$SCRIPT" ]]
+  then
+    OPTION="$3"
+  else
+    OPTION="$2"
+  fi
+  if [[ "$SCRIPT" == "$SCRIPT_BIN" || "$SCRIPT" == "purge-nvda" ]]
+  then
+    BIN_CALL=1
+  fi
+}
 
 # Elevate privileges
 elevate_privileges()
@@ -243,14 +331,12 @@ disable_hibernation()
 }
 
 # Revert hibernation settings
-enable_hibernation()
+restore_sleep()
 {
-  echo "\n>> ${BOLD}Enable Hibernation${NORMAL}\n"
-  echo "${BOLD}Enabling hibernation...${NORMAL}"
-  pmset -a autopoweroff 1
-  pmset -a standby 1
-  pmset -a hibernatemode 3
-  echo "Hibernation enabled.\n"
+  echo "\n>> ${BOLD}Restore Sleep Configuration${NORMAL}\n"
+  echo "${BOLD}Restoring default sleep settings...${NORMAL}"
+  pmset restoredefaults
+  echo "Restore complete.\n"
 }
 
 # Rebuild kernel cache
@@ -371,7 +457,7 @@ install_bin()
 # Bin first-time setup
 first_time_setup()
 {
-  if [[ "$SCRIPT" == "$SCRIPT_BIN" || "$SCRIPT" == "purge-nvda" ]]
+  if [[ "$BIN_CALL" == 1 ]]
   then
     return 0
   fi
@@ -421,19 +507,19 @@ show_script_version()
 usage()
 {
   echo "\n>> ${BOLD}Command Line Shortcuts${NORMAL}\n"
-  echo " purge-nvda ${BOLD}-[p s n c b y v h r q]${NORMAL}"
+  echo " purge-nvda ${BOLD}-[OPTION]${NORMAL}"
   echo "
-    ${BOLD}-p${NORMAL}: Enable AMD eGPUs
-    ${BOLD}-s${NORMAL}: Suppress NVIDIA GPUs
-    ${BOLD}-n${NORMAL}: Force Single iGPU Boot
-    ${BOLD}-c${NORMAL}: System Status
-    ${BOLD}-u${NORMAL}: Uninstall
-    ${BOLD}-h${NORMAL}: Command-Line Shortcuts
-    ${BOLD}-v${NORMAL}: Script Version
-    ${BOLD}-b${NORMAL}: Disable Hibernation
-    ${BOLD}-y${NORMAL}: Enable Hibernation
-    ${BOLD}-r${NORMAL}: Reboot
-    ${BOLD}-q${NORMAL}: Quit
+    ${BOLD}-enable_amd${NORMAL}: Enable AMD eGPUs
+    ${BOLD}-suppress_only${NORMAL}: Suppress NVIDIA GPUs
+    ${BOLD}-mux_igpu${NORMAL}: Force Single iGPU Boot
+    ${BOLD}-status${NORMAL}: System Status
+    ${BOLD}-uninstall${NORMAL}: Uninstall
+    ${BOLD}-shortcuts${NORMAL}: Command-Line Shortcuts
+    ${BOLD}-version${NORMAL}: Script Version
+    ${BOLD}-disable_hibernation${NORMAL}: Disable Hibernation
+    ${BOLD}-restore_sleep${NORMAL}: Enable Hibernation
+    ${BOLD}-reboot${NORMAL}: Reboot
+    ${BOLD}-quit${NORMAL}: Quit
     "
 }
 
@@ -455,7 +541,7 @@ process_arg_bypass()
 {
   if [[ "$OPTION" ]]
   then
-    OPTION=`echo $OPTION | head -c 2 | tail -c 1`
+    OPTION=${OPTION:1}
     eval OPTION="${!OPTION}"
     process_input "$OPTION"
     exit 0
@@ -487,7 +573,7 @@ provide_menu_selection()
 
    ${BOLD}>> Additional Options${NORMAL}            ${BOLD}>> System Sleep Configuration${NORMAL}
    ${BOLD}6.${NORMAL}  Command-Line Shortcuts       ${BOLD}8.${NORMAL}  Disable Hibernation
-   ${BOLD}7.${NORMAL}  Script Version               ${BOLD}9.${NORMAL}  Enable Hibernation
+   ${BOLD}7.${NORMAL}  Script Version               ${BOLD}9.${NORMAL}  Restore Sleep Configuration
 
    ${BOLD}10.${NORMAL} Reboot System
    ${BOLD}11.${NORMAL} Quit
@@ -502,7 +588,9 @@ provide_menu_selection()
 # Primary execution routine
 begin()
 {
+  validate_caller "$1" "$2"
   perform_sys_check
+  fetch_latest_release
   first_time_setup
   process_arg_bypass
   clear
@@ -510,4 +598,4 @@ begin()
   provide_menu_selection
 }
 
-begin
+begin "$0" "$1"
