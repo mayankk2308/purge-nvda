@@ -62,7 +62,7 @@ Checks for the applied patches and provides system state information.
 Uninstalls any applied modifications made using the script or binary. This will not uninstall the script/binary itself.
 
 #### 6. Command-Line Shortcuts (`-shortcuts`)
-Prints a list of single-letter options that may be passed to the script or binary to completely forgo the command-line user interface and directly perform actions.
+Prints a list of command line options that may be passed to the script or binary to completely forgo the command-line user interface and directly perform actions.
 
 #### 7. Script Version (`-version`)
 Prints the version of the script/binary.
