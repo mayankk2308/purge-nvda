@@ -29,7 +29,6 @@ shopt -s nocasematch
 
 # Script binary
 LOCAL_BIN="/usr/local/bin"
-mkdir -p -m 775 "$LOCAL_BIN"
 SCRIPT_BIN="${LOCAL_BIN}/purge-nvda"
 TMP_SCRIPT="${LOCAL_BIN}/purge-nvda-new"
 BIN_CALL=0
@@ -142,6 +141,7 @@ prompt_software_update()
 # Check Github for newer version + prompt update
 fetch_latest_release()
 {
+  mkdir -p -m 775 "$LOCAL_BIN"
   if [[ "$BIN_CALL" == 0 ]]
   then
     return 0
