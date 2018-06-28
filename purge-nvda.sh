@@ -387,7 +387,7 @@ update_nvram()
 {
   echo "\n${BOLD}>> Force Single iGPU Boot${NORMAL}\n"
   echo "${BOLD}Updating NVRAM...${NORMAL}"
-  nvram "${NV_GUID}:gpu-power-prefs"="$DG_POWER_PREF"
+  nvram "${NV_GUID}:gpu-power-prefs"="$IG_POWER_PREF"
   echo "Update complete.\n"
 }
 
