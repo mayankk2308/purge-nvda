@@ -1,17 +1,17 @@
 ![Header](https://raw.githubusercontent.com/mayankk2308/purge-nvda/master/resources/header.png)
 
 ![macOS Support](https://img.shields.io/badge/macOS-10.13.4+-orange.svg?style=for-the-badge) ![Github All Releases](https://img.shields.io/github/downloads/mayankk2308/purge-nvda/total.svg?style=for-the-badge)
-# Purge-NVDA
-A simple script for Macs that purges the activation of the discrete **NVIDIA** GPUs on **macOS** and by extension enables **AMD external graphics** support.
+# PurgeNVDA
+Allows macs with **NVIDIA GPUs** to optimally use both **AMD** and **NVIDIA** external graphics.
 
 ## Requirements
 This script requires the following specifications:
 * Mac with integrated Intel GPU + discrete **NVIDIA** GPU
 * **macOS 10.13.4** or later
 
-For AMD eGPU support please use along with [purge-wrangler.sh](https://github.com/mayankk2308/purge-wrangler/releases).
+For **eGPU support** please use along with [purge-wrangler.sh](https://github.com/mayankk2308/purge-wrangler/releases).
 
-It is recommended that you have a backup of the system. Testing was done on a **Mid-2014 MacBook Pro w/ GeForce GT 750M**.
+It is recommended that you have a backup of the system.
 
 ## Usage
 Please follow these steps:
