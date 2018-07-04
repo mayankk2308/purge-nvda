@@ -312,16 +312,19 @@ process_args() {
     -fa|--fix-amd|1)
     echo "\n>> ${BOLD}Fix AMD eGPUs${NORMAL}\n"
     update_nvram "nv_disable=1" "${IG_POWER_PREF}"
+    pmset -a gpuswitch 0
     echo "\n${BOLD}System ready.${NORMAL} Reboot to apply changes.\n";;
     -on|--optimize-nv|2)
     echo "\n>> ${BOLD}Optimize NVIDIA eGPUs${NORMAL}\n"
     patch_nv_plists
     [[ $PLIST_PATCHED == 0 ]] && ask_menu && return
+    pmset -a gpuswitch 0
     update_nvram "" "${IG_POWER_PREF}"
     echo "\n${BOLD}System ready.${NORMAL} Reboot to apply changes.\n";;
     -sn|--suppress-nv|3)
     echo "\n>> ${BOLD}Suppress NVIDIA GPUs${NORMAL}\n"
     update_nvram "agc=-1" "${IG_POWER_PREF}"
+    pmset -a gpuswitch 0
     echo "\n${BOLD}System ready.${NORMAL} Reboot to apply changes.\n";;
     -mi|--mux-igpu|4)
     echo "\n>> ${BOLD}Set Mux to iGPU${NORMAL}\n"

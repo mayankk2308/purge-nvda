@@ -1,4 +1,6 @@
-![Github All Releases](https://img.shields.io/github/downloads/mayankk2308/purge-nvda/total.svg?style=for-the-badge)
+![Header](https://raw.githubusercontent.com/mayankk2308/purge-nvda/master/resources/header.png)
+
+![macOS Support](https://img.shields.io/badge/macOS-10.13.4+-orange.svg?style=for-the-badge) ![Github All Releases](https://img.shields.io/github/downloads/mayankk2308/purge-nvda/total.svg?style=for-the-badge)
 # Purge-NVDA
 A simple script for Macs that purges the activation of the discrete **NVIDIA** GPUs on **macOS** and by extension enables **AMD external graphics** support.
 
@@ -46,35 +48,32 @@ This is supported on **2.0.0** or later. Automatic updates are supported from **
 ## Options
 The script provides users with a variety of options in an attempt to be as user-friendly as possible.
 
-#### 1. Enable AMD eGPUs (`-enable_amd`)
-Disables the NVIDIA GPU using the **kextless** NVRAM patch, allowing acceleration of foreign AMD framebuffers, and therefore AMD eGPUs.
+#### 1. Fix AMD eGPUs (`-fa|--fix-amd`)
+Disables all NVIDIA GPUs to resolve AMD-NVIDIA framebuffer conflicts when an AMD eGPU is initialized on the system.
 
-#### 2. Suppress NVIDIA GPUs (`-suppress_only`)
-Disables the NVIDIA GPU using **kext-based** framebuffer deactivation, which mounts the GPU but never allows instantiation and use for render or compute. This is recommended if eGPUs are not involved and iGPU-only behavior for other reasons is needed.
+#### 2. Optimize NVIDIA eGPUs (`-on|--optimize-nv`)
+Disables only the internal NVIDIA GPU to enable OpenCL/GL acceleration and high performance with NVIDIA eGPUs with a combination of NVRAM + NVDA kernel extension patches.
 
-#### 3. Force Single iGPU Boot (`-mux_igpu`)
-Patches NVRAM to force only one macOS session with iGPU use only. A subsequent boot will have an active discrete NVIDIA GPU.
+#### 3. Suppress NVIDIA GPUs (`-sn|--suppress-nv`)
+Disables all NVIDIA GPUs at macOS-independent machine level - therefore affecting all macOS installations running on the machine. This patch does not modify any system files.
 
-### 4. System Status (`-status`)
-Checks for the applied patches and provides system state information.
+### 4. Set Mux to iGPU (`-mi|--mux-igpu`)
+Sets the system graphics multiplexer to the integrated Intel GPU, if available. This preference is after a system boots with its discrete GPU enabled (such that macOS may initialize its framebuffer), thus only lasts for one boot unless appropriate measures to curb dGPU activation are in place.
 
-#### 5. Uninstall (`-uninstall`)
-Uninstalls any applied modifications made using the script or binary. This will not uninstall the script/binary itself.
+#### 5. Uninstall (`-u|--uninstall`)
+Uninstalls any possible system modifications made by the script.
 
-#### 6. Command-Line Shortcuts (`-shortcuts`)
-Prints a list of command line options that may be passed to the script or binary to completely forgo the command-line user interface and directly perform actions.
+#### 6. System Status (`-s|--status`)
+Shows the status of the currently installed patches on the system.
 
-#### 7. Script Version (`-version`)
-Prints the version of the script/binary.
-
-#### 8. Disable Hibernation (`-disable_hibernation`)
+#### 7. Disable Hibernation (`-dh|--disable-hibernation`)
 Disables hibernation mode and automatic power off as these settings may resolve wake-up failures with discrete graphics disabled.
 
-#### 9. Restore Sleep Configuration (`-restore_sleep`)
+#### 9. Restore Power Settings (`-rp|--restore-power`)
 Restores the hibernation mode configurations to recommended settings.
 
-#### 10. Reboot System (`-reboot`)
-Reboots the system with a countdown.
+#### 10. Reboot System (`-rb|--reboot`)
+Reboots the system after requesting confirmation.
 
 ## Troubleshooting
 If you are unable to boot into macOS, boot into Single User Mode (**CMD + S** on boot) and type in the following commands:
