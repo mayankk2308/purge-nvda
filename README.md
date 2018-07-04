@@ -57,7 +57,7 @@ Disables only the internal NVIDIA GPU to enable OpenCL/GL acceleration and high 
 #### 3. Suppress NVIDIA GPUs (`-sn|--suppress-nv`)
 Disables all NVIDIA GPUs at macOS-independent machine level - therefore affecting all macOS installations running on the machine. This patch does not modify any system files.
 
-### 4. Set Mux to iGPU (`-mi|--mux-igpu`)
+#### 4. Set Mux to iGPU (`-mi|--mux-igpu`)
 Sets the system graphics multiplexer to the integrated Intel GPU, if available. This preference is after a system boots with its discrete GPU enabled (such that macOS may initialize its framebuffer), thus only lasts for one boot unless appropriate measures to curb dGPU activation are in place.
 
 #### 5. Uninstall (`-u|--uninstall`)
