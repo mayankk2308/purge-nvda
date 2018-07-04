@@ -26,7 +26,7 @@ $ reboot
 ### Step 2
 Boot back into macOS, then copy-paste the following into **Terminal**:
 ```bash
-curl -L -s https://github.com/mayankk2308/purge-nvda/releases/download/2.1.1/purge-nvda.sh > purge-nvda.sh;chmod +x purge-nvda.sh;./purge-nvda.sh;rm purge-nvda.sh
+curl -s "https://api.github.com/repos/mayankk2308/purge-nvda/releases/latest" | grep '"browser_download_url":' | sed -E 's/.*"([^"]+)".*/\1/' | xargs curl -L -s -0 > purge-nvda.sh && chmod +x purge-nvda.sh && ./purge-nvda.sh && rm purge-nvda.sh
 ```
 
 Note that you may change to a different valid version in the above command.
