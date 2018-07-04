@@ -55,7 +55,7 @@ NVDA_STARTUP_OFFICIAL_PLIST="${SYS_EXT}NVDAStartup.kext${PLIST_FILE}"
 NVDA_STARTUP_WEB_PLIST="${TP_EXT}NVDAStartupWeb.kext${PLIST_FILE}"
 
 # NVRAM IG+DG Variables
-NV_GUID="fa4ce28d-b62f-4c99-9cc3-6815686e30f9"
+NV_GUID="FA4CE28D-B62F-4C99-9CC3-6815686E30F9"
 IG_POWER_PREF="%01%00%00%00"
 DG_POWER_PREF="%00%00%00%00"
 
@@ -69,7 +69,10 @@ PLIST_PATCHED=0
 PlistBuddy="/usr/libexec/PlistBuddy"
 NV_DRV_KEY=":IOKitPersonalities:NVDAStartup:IOPCIMatch"
 ORIGINAL_PCI_MATCH_VALUE="0x000010de&0x0000ffff"
-MODERN_NV_GPU_DEVICE_IDS="0x1b8110de"
+# Modern GM/GP Arch(s): 0x13c010de 0x13c210de 0x140110de 0x15f710de 0x15f810de 0x15f910de
+# 0x1b0010de 0x1b0610de 0x1b3010de 0x1b3810de 0x1b3810de 0x1b8010de 0x1b8110de 0x1b8410de
+# 0x1bb010de 0x1bb310de 0x1c0210de 0x1c0310de 0x1c8110de 0x1c8210de 0x1d0110de
+MODERN_NV_GPU_DEVICE_IDS="0x100010de&0xf000ffff"
 
 # ----- SCRIPT SOFTWARE UPDATE SYSTEM
 
@@ -199,8 +202,8 @@ restore_power_settings() {
 # Fix kext permissions and rebuild kextcache
 sanitize_system() {
   echo "${BOLD}Sanitizing system...${NORMAL}"
-  chown -R root:wheel "${SYS_EXT}NVDAStartup.kext" "${TP_EXT}NVDAStartupWeb.kext"
-  chmod -R 755 "${SYS_EXT}NVDAStartup.kext" "${TP_EXT}NVDAStartupWeb.kext"
+  chown -R root:wheel "${SYS_EXT}NVDAStartup.kext" "${TP_EXT}NVDAStartupWeb.kext" 1>/dev/null 2>&1
+  chmod -R 755 "${SYS_EXT}NVDAStartup.kext" "${TP_EXT}NVDAStartupWeb.kext" 1>/dev/null 2>&1
   kextcache -i / 1>/dev/null 2>&1
   echo "System sanitized."
 }
@@ -223,8 +226,10 @@ update_nvram() {
   BOOT_ARG="${1}"
   POWER_PREFS="${2}"
   [[ "${BOOT_ARG}" != "-no-set" ]] && nvram boot-args="${BOOT_ARG}"
-  nvram ${NV_GUID}:gpu-power-prefs="${POWER_PREFS}"
+  nvram "${NV_GUID}:gpu-power-prefs"="${POWER_PREFS}"
+  nvram "${NV_GUID}:gpu-active"="${POWER_PREFS}"
   nvram -s
+  sleep 5
   echo "NVRAM configured."
 }
 
@@ -232,8 +237,8 @@ update_nvram() {
 
 revert_nv_plists() {
   echo "${BOLD}Reverting NVIDIA driver configuration...${NORMAL}"
-  $PlistBuddy -c "Set ${NV_DRV_KEY} ${ORIGINAL_PCI_MATCH_VALUE}" "${NVDA_STARTUP_OFFICIAL_PLIST}" 2>/dev/null
-  $PlistBuddy -c "Set ${NV_DRV_KEY} ${ORIGINAL_PCI_MATCH_VALUE}"  "${NVDA_STARTUP_WEB_PLIST}" 2>/dev/null
+  $PlistBuddy -c "Set ${NV_DRV_KEY} ${ORIGINAL_PCI_MATCH_VALUE}" "${NVDA_STARTUP_OFFICIAL_PLIST}" 1>/dev/null 2>&1
+  $PlistBuddy -c "Set ${NV_DRV_KEY} ${ORIGINAL_PCI_MATCH_VALUE}"  "${NVDA_STARTUP_WEB_PLIST}" 1>/dev/null 2>&1
   echo "Configuration reverted."
   PLIST_PATCHED=0
   sanitize_system
@@ -312,19 +317,16 @@ process_args() {
     -fa|--fix-amd|1)
     echo "\n>> ${BOLD}Fix AMD eGPUs${NORMAL}\n"
     update_nvram "nv_disable=1" "${IG_POWER_PREF}"
-    pmset -a gpuswitch 0
     echo "\n${BOLD}System ready.${NORMAL} Reboot to apply changes.\n";;
     -on|--optimize-nv|2)
     echo "\n>> ${BOLD}Optimize NVIDIA eGPUs${NORMAL}\n"
     patch_nv_plists
     [[ $PLIST_PATCHED == 0 ]] && ask_menu && return
-    pmset -a gpuswitch 0
     update_nvram "" "${IG_POWER_PREF}"
     echo "\n${BOLD}System ready.${NORMAL} Reboot to apply changes.\n";;
     -sn|--suppress-nv|3)
     echo "\n>> ${BOLD}Suppress NVIDIA GPUs${NORMAL}\n"
     update_nvram "agc=-1" "${IG_POWER_PREF}"
-    pmset -a gpuswitch 0
     echo "\n${BOLD}System ready.${NORMAL} Reboot to apply changes.\n";;
     -mi|--mux-igpu|4)
     echo "\n>> ${BOLD}Set Mux to iGPU${NORMAL}\n"
@@ -341,7 +343,7 @@ process_args() {
     -rb|--reboot|9)
     echo "\n>> ${BOLD}Reboot System${NORMAL}\n"
     read -p "${BOLD}Reboot${NORMAL} now? [Y/N]: " INPUT
-    [[ "${INPUT}" == "Y" ]] && echo "\n${BOLD}Rebooting...${NORMAL}" && reboot
+    [[ "${INPUT}" == "Y" ]] && echo "\n${BOLD}Rebooting...${NORMAL}" && reboot && sleep 10
     [[ "${INPUT}" == "N" ]] && echo "\nReboot aborted.\n" && ask_menu;;
     0)
     echo && exit;;
