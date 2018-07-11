@@ -48,7 +48,7 @@ This is supported on **2.0.0** or later. Automatic updates are supported from **
 ## Options
 PurgeWrangler makes it super-easy to perform actions with an interactive menu, and is recommended for most users. Providing no arguments to the script defaults to the menu.
 
-![PurgeNVDA Menu](https://raw.githubusercontent.com/mayankk2308/purge-wrangler/master/resources/purge-nvda-menu.png)
+![PurgeNVDA Menu](https://raw.githubusercontent.com/mayankk2308/purge-nvda/master/resources/purge-nvda-menu.png)
 
 For advanced users that may sometimes prefer bypassing the menu, the script provides convenient arguments in an attempt to be as user-friendly as possible.
 
