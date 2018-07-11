@@ -46,7 +46,11 @@ $ purge-nvda
 This is supported on **2.0.0** or later. Automatic updates are supported from **2.1.0** or later.
 
 ## Options
-The script provides users with a variety of options in an attempt to be as user-friendly as possible.
+PurgeWrangler makes it super-easy to perform actions with an interactive menu, and is recommended for most users. Providing no arguments to the script defaults to the menu.
+
+![PurgeNVDA Menu](https://raw.githubusercontent.com/mayankk2308/purge-wrangler/master/resources/purge-nvda-menu.png)
+
+For advanced users that may sometimes prefer bypassing the menu, the script provides convenient arguments in an attempt to be as user-friendly as possible.
 
 #### 1. Fix AMD eGPUs (`-fa|--fix-amd`)
 Disables all NVIDIA GPUs to resolve AMD-NVIDIA framebuffer conflicts when an AMD eGPU is initialized on the system.
