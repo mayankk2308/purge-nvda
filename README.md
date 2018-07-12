@@ -1,6 +1,6 @@
 ![Header](https://raw.githubusercontent.com/mayankk2308/purge-nvda/master/resources/header.png)
 
-![macOS Support](https://img.shields.io/badge/macOS-10.13.4+-orange.svg?style=for-the-badge) ![Github All Releases](https://img.shields.io/github/downloads/mayankk2308/purge-nvda/total.svg?style=for-the-badge)
+![macOS Support](https://img.shields.io/badge/macOS-10.13.4+-orange.svg?style=for-the-badge) ![Github All Releases](https://img.shields.io/github/downloads/mayankk2308/purge-nvda/total.svg?style=for-the-badge) [![paypal][image-1]][1]
 # PurgeNVDA
 Allows macs with **NVIDIA GPUs** to optimally use both **AMD** and **NVIDIA** external graphics.
 
@@ -98,11 +98,9 @@ This script moves core system files associated with macOS. While any of the pote
 This project is available under the **MIT** license. See the license file for more information.
 
 ## Donate
-A *"Thank you"* is enough to make me smile. But due to popular demand:
+A *thank you* suffices, but for those kind souls who want to contribute:
 
 [![paypal][image-1]][1]
-
-Knock yourself out :)
 
 [image-1]:	https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif
 [1]:	https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=mayankk2308@gmail.com&lc=US&item_name=mac_editor&no_note=0&currency_code=USD&bn=PP-DonationsBF:btn_donate_SM.gif:NonHostedGuest
