@@ -3,7 +3,7 @@
 # purge-nvda.sh
 # Author(s): Mayank Kumar (mayankk2308, github.com / mac_editor, egpu.io)
 # License: Specified in LICENSE.md.
-# Version: 3.0.0
+# Version: 3.0.1
 
 # Re-written for scalability and better user interaction.
 
@@ -249,7 +249,7 @@ revert_nv_plists() {
 uninstall() {
   echo "\n${BOLD}>> Uninstall${NORMAL}\n"
   echo "${BOLD}Uninstalling...${NORMAL}"
-  pmset -a gpuswitch 2
+  pmset -a gpuswitch 2 2>/dev/null 1>&2
   revert_nv_plists
   update_nvram "" "${DG_POWER_PREF}"
   echo "Uninstallation complete.\n"
@@ -295,13 +295,16 @@ ask_menu() {
 # Menu
 provide_menu_selection() {
   echo "
-   ${BOLD}>> Patching System${NORMAL}           ${BOLD}>> System Management${NORMAL}
-   ${BOLD}1.${NORMAL} Fix AMD eGPUs             ${BOLD}6.${NORMAL} System Status
-   ${BOLD}2.${NORMAL} Optimize NVIDIA eGPUs     ${BOLD}7.${NORMAL} Disable Hibernation
-   ${BOLD}3.${NORMAL} Suppress NVIDIA GPUs      ${BOLD}8.${NORMAL} Restore Power Settings
-   ${BOLD}4.${NORMAL} Set Mux to iGPU           ${BOLD}9.${NORMAL} Reboot System
-   ${BOLD}5.${NORMAL} Uninstall
+   ${BOLD}>> eGPU Support${NORMAL}          ${BOLD}>> System Management${NORMAL}
+   ${BOLD}1.${NORMAL} AMD eGPUs             ${BOLD}6.${NORMAL} Status
+   ${BOLD}2.${NORMAL} NVIDIA eGPUs          ${BOLD}7.${NORMAL} Disable Hibernation
+   ${BOLD}3.${NORMAL} Uninstall             ${BOLD}8.${NORMAL} Restore Power Settings
 
+   ${BOLD}>> Additional Tools${NORMAL}
+   ${BOLD}4.${NORMAL} Suppress NVIDIA GPUs
+   ${BOLD}5.${NORMAL} Set Mux to iGPU
+
+   ${BOLD}9.${NORMAL} Reboot System
    ${BOLD}0.${NORMAL} Quit
   "
   read -n1 -p "${BOLD}What next?${NORMAL} [0-9]: " INPUT
@@ -319,25 +322,25 @@ provide_menu_selection() {
 process_args() {
   case "${1}" in
     -fa|--fix-amd|1)
-    echo "\n>> ${BOLD}Fix AMD eGPUs${NORMAL}\n"
+    echo "\n>> ${BOLD}AMD eGPUs${NORMAL}\n"
     update_nvram "nv_disable=1" "${IG_POWER_PREF}"
     echo "\n${BOLD}System ready.${NORMAL} Reboot to apply changes.\n";;
     -on|--optimize-nv|2)
-    echo "\n>> ${BOLD}Optimize NVIDIA eGPUs${NORMAL}\n"
+    echo "\n>> ${BOLD}NVIDIA eGPUs${NORMAL}\n"
     patch_nv_plists
     [[ $PLIST_PATCHED == 0 ]] && ask_menu && return
     update_nvram "" "${IG_POWER_PREF}"
     echo "\n${BOLD}System ready.${NORMAL} Reboot to apply changes.\n";;
-    -sn|--suppress-nv|3)
+    -u|--uninstall|3)
+    uninstall;;
+    -sn|--suppress-nv|4)
     echo "\n>> ${BOLD}Suppress NVIDIA GPUs${NORMAL}\n"
     update_nvram "agc=-1" "${IG_POWER_PREF}"
     echo "\n${BOLD}System ready.${NORMAL} Reboot to apply changes.\n";;
-    -mi|--mux-igpu|4)
+    -mi|--mux-igpu|5)
     echo "\n>> ${BOLD}Set Mux to iGPU${NORMAL}\n"
     update_nvram "-no-set" "${IG_POWER_PREF}"
     echo "\n${BOLD}System ready.${NORMAL} Reboot to apply changes.\n";;
-    -u|--uninstall|5)
-    uninstall;;
     -s|--status|6)
     check_system_status;;
     -dh|--disable-hibernation|7)
