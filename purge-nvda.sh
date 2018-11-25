@@ -28,7 +28,7 @@ BIN_CALL=0
 SCRIPT_FILE=""
 
 # Script version
-SCRIPT_MAJOR_VER="3" && SCRIPT_MINOR_VER="0" && SCRIPT_PATCH_VER="0"
+SCRIPT_MAJOR_VER="3" && SCRIPT_MINOR_VER="0" && SCRIPT_PATCH_VER="1"
 SCRIPT_VER="${SCRIPT_MAJOR_VER}.${SCRIPT_MINOR_VER}.${SCRIPT_PATCH_VER}"
 
 # User input
@@ -79,7 +79,8 @@ MODERN_NV_GPU_DEVICE_IDS="0x100010de&0xf000ffff"
 # Perform software update
 perform_software_update() {
   echo "${BOLD}Downloading...${NORMAL}"
-  curl -L -s "${LATEST_RELEASE_DWLD}" > "${TMP_SCRIPT}"
+  curl -L -s -o "${TMP_SCRIPT}" "${LATEST_RELEASE_DWLD}"
+  [[ "$(cat "${TMP_SCRIPT}")" == "Not Found" ]] && echo -e "Download failed.\n${BOLD}Continuing without updating...${NORMAL}" && sleep 1 && rm "${TMP_SCRIPT}" && return
   echo "Download complete.\n${BOLD}Updating...${NORMAL}"
   chmod 700 "${TMP_SCRIPT}" && chmod +x "${TMP_SCRIPT}"
   rm "${SCRIPT}" && mv "${TMP_SCRIPT}" "${SCRIPT}"
@@ -92,7 +93,8 @@ perform_software_update() {
 
 # Prompt for update
 prompt_software_update() {
-  read -p "${BOLD}Would you like to update?${NORMAL} [Y/N]: " INPUT
+  read -n1 -p "${BOLD}Would you like to update?${NORMAL} [Y/N]: " INPUT
+  echo
   [[ "${INPUT}" == "Y" ]] && echo && perform_software_update && return
   [[ "${INPUT}" == "N" ]] && echo "\n${BOLD}Proceeding without updating...${NORMAL}" && return
   echo "\nInvalid choice. Try again.\n"
@@ -111,7 +113,7 @@ fetch_latest_release() {
   LATEST_PATCH_VER="$(echo "${LATEST_RELEASE_VER}" | cut -d '.' -f3)"
   if [[ $LATEST_MAJOR_VER > $SCRIPT_MAJOR_VER || ($LATEST_MAJOR_VER == $SCRIPT_MAJOR_VER && $LATEST_MINOR_VER > $SCRIPT_MINOR_VER) || ($LATEST_MAJOR_VER == $SCRIPT_MAJOR_VER && $LATEST_MINOR_VER == $SCRIPT_MINOR_VER && $LATEST_PATCH_VER > $SCRIPT_PATCH_VER) && "$LATEST_RELEASE_DWLD" ]]
   then
-    echo "\n>> ${BOLD}Software Update${NORMAL}\n\nA script update (${BOLD}${LATEST_RELEASE_VER}${NORMAL}) is available.\nYou are currently on ${BOLD}${SCRIPT_VER}${NORMAL}."
+    echo "\n>> ${BOLD}Software Update${NORMAL}\n\nA script update (${BOLD}${LATEST_RELEASE_VER}${NORMAL}) is available.\nYou are currently on ${BOLD}${SCRIPT_VER}${NORMAL}.\n"
     prompt_software_update
   fi
 }
@@ -282,7 +284,8 @@ first_time_setup() {
 
 # Ask for main menu
 ask_menu() {
-  read -p "${BOLD}Back to menu?${NORMAL} [Y/N]: " INPUT
+  read -n1 -p "${BOLD}Back to menu?${NORMAL} [Y/N]: " INPUT
+  echo
   [[ "${INPUT}" == "Y" ]] && clear && echo "\n>> ${BOLD}PurgeNVDA (${SCRIPT_VER})${NORMAL}" && perform_sys_check && provide_menu_selection && return
   [[ "${INPUT}" == "N" ]] && echo && exit
   echo "\nInvalid choice. Try again.\n"
@@ -301,7 +304,8 @@ provide_menu_selection() {
 
    ${BOLD}0.${NORMAL} Quit
   "
-  read -p "${BOLD}What next?${NORMAL} [0-9]: " INPUT
+  read -n1 -p "${BOLD}What next?${NORMAL} [0-9]: " INPUT
+  echo
   if [[ ! -z "${INPUT}" ]]
   then
     process_args "${INPUT}"
@@ -342,7 +346,8 @@ process_args() {
     restore_power_settings;;
     -rb|--reboot|9)
     echo "\n>> ${BOLD}Reboot System${NORMAL}\n"
-    read -p "${BOLD}Reboot${NORMAL} now? [Y/N]: " INPUT
+    read -n1 -p "${BOLD}Reboot${NORMAL} now? [Y/N]: " INPUT
+    echo
     [[ "${INPUT}" == "Y" ]] && echo "\n${BOLD}Rebooting...${NORMAL}" && reboot && sleep 10
     [[ "${INPUT}" == "N" ]] && echo "\nReboot aborted.\n" && ask_menu;;
     0)
