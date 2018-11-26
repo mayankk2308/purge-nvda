@@ -1,6 +1,5 @@
 # ![Header](https://raw.githubusercontent.com/mayankk2308/purge-nvda/master/resources/header.png)
-
-![macOS Support](https://img.shields.io/badge/macOS-10.13.4+-orange.svg?style=for-the-badge) ![Github All Releases](https://img.shields.io/github/downloads/mayankk2308/purge-nvda/total.svg?style=for-the-badge) [![paypal](https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/PayPal.svg/124px-PayPal.svg.png)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=mayankk2308@gmail.com&lc=US&item_name=Development%20of%20PurgeNVDA&no_note=0&currency_code=USD&bn=PP-DonationsBF:btn_donate_SM.gif:NonHostedGuest)
+![Script Version](https://img.shields.io/github/release/mayankk2308/purge-nvda.svg?style=for-the-badge) ![macOS Support](https://img.shields.io/badge/macOS-10.13.4+-orange.svg?style=for-the-badge) ![Github All Releases](https://img.shields.io/github/downloads/mayankk2308/purge-nvda/total.svg?style=for-the-badge) [![paypal](https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/PayPal.svg/124px-PayPal.svg.png)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=mayankk2308@gmail.com&lc=US&item_name=Development%20of%20PurgeNVDA&no_note=0&currency_code=USD&bn=PP-DonationsBF:btn_donate_SM.gif:NonHostedGuest)
 # PurgeNVDA
 **purge-nvda.sh** is required for certain macs to configure the system further for working external GPU support, alongside [purge-wrangler.sh](https://github.com/mayankk2308/purge-wrangler). It may also serve useful for other use cases such as bad discrete GPU chipsets, etc., but is not tested or guaranteed.
 
