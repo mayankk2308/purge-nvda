@@ -38,7 +38,7 @@ In case you are not up-to-date, please read [Apple](https://support.apple.com/en
 ## Installation
 **purge-nvda.sh** auto-manages itself and provides multiple installation and recovery options. Once the **pre-requisites** are satisfied, install the script by running the following in **Terminal**:
 ```bash
-curl -s "https://api.github.com/repos/mayankk2308/purge-nvda/releases/latest" | grep '"browser_download_url":' | sed -E 's/.*"([^"]+)".*/\1/' | xargs curl -L -s -0 > purge-nvda.sh && chmod +x purge-nvda.sh && ./purge-nvda.sh && rm purge-nvda.sh
+curl -q -s "https://api.github.com/repos/mayankk2308/purge-nvda/releases/latest" | grep '"browser_download_url":' | sed -E 's/.*"browser_download_url":[ \t]*"([^"]+)".*/\1/' | xargs curl -L -s -0 > purge-nvda.sh && chmod +x purge-nvda.sh && ./purge-nvda.sh && rm purge-nvda.sh
 ```
 
 For future use, only the following will be required:
