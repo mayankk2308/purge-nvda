@@ -60,9 +60,7 @@ PurgeNVDA makes it super-easy to perform actions with an interactive menu, and i
 | `-sn` or `--suppress-nv` | Suppress NVIDIA GPUs | Disables all NVIDIA GPUs with fixed  cold gmux - therefore affecting all macOS installations running on the machine. This patch does not modify any system files. |
 | `-mi` or `--mux-igpu` | Set Mux to iGPU | Sets the system graphics multiplexer to the integrated Intel GPU, if available. This preference is after a system boots with its discrete GPU enabled (such that macOS may initialize its framebuffer), thus only lasts for one boot unless appropriate measures to curb dGPU activation are in place. |
 | `-s` or `--status` | Status | Shows the currently installed patches on the system. Since the mux commands are consumed, mux status will show as inactive/disabled after the chip has been set. |
-| `-dh` or `--disable-hibernation` | Disable Hibernation | Disables hibernation mode and automatic power off as these settings may resolve wake-up failures with discrete graphics disabled. |
-| `-rp` or `--restore-power` | Restore Power Settings | Restores the hibernation mode configurations to factory settings. |
-| `-rb` or `--reboot` | Reboot System | Prompts the user to reboot the system, and instantly does so if after user consent, useful for easy command-line reboots. |
+| `-d` or `--donate` | Donate | Launches the default web browser with the set donation link - essentially the same as the **PayPal** button on this page. |
 
 ## Recovery
 If you are unable to boot into macOS, boot while pressing **⌘ + S**, then enter the following commands:
