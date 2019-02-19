@@ -15,6 +15,8 @@ A quick run-through of what's included in this document:
   - Easy way to recover from an unbootable system using the script.
 - [Post-Install](https://github.com/mayankk2308/purge-nvda#post-install)
   - System configuration after script installation and some other things of note.
+- [Known Issues](https://github.com/mayankk2308/purge-nvda#known-issues)
+  - A table of known issues and side effects of using the script.
 - [Troubleshooting](https://github.com/mayankk2308/purge-nvda#troubleshooting)
   - Additional resources and guides for eGPUs.
 - [Disclaimer](https://github.com/mayankk2308/purge-nvda#disclaimer)
@@ -36,7 +38,7 @@ In case you are not up-to-date, please read [Apple](https://support.apple.com/en
 ## Installation
 **purge-nvda.sh** auto-manages itself and provides multiple installation and recovery options. Once the **pre-requisites** are satisfied, install the script by running the following in **Terminal**:
 ```bash
-curl -s "https://api.github.com/repos/mayankk2308/purge-nvda/releases/latest" | grep '"browser_download_url":' | sed -E 's/.*"([^"]+)".*/\1/' | xargs curl -L -s -0 > purge-nvda.sh && chmod +x purge-nvda.sh && ./purge-nvda.sh && rm purge-nvda.sh
+curl -q -s "https://api.github.com/repos/mayankk2308/purge-nvda/releases/latest" | grep '"browser_download_url":' | sed -E 's/.*"browser_download_url":[ \t]*"([^"]+)".*/\1/' | xargs curl -L -s -0 > purge-nvda.sh && chmod +x purge-nvda.sh && ./purge-nvda.sh && rm purge-nvda.sh
 ```
 
 For future use, only the following will be required:
@@ -72,6 +74,15 @@ This will restore your system to a clean state as documented above.
 
 ## Post-Install
 After installing the script, all settings as described in [pre-requisites](https://github.com/mayankk2308/purge-wrangler#pre-requisites) must persist. For instance, **system integrity protection** must remain disabled as long as the system is in the *patched* state.
+
+## Known Issues
+**purge-nvda.sh** implements solutions that bring with it multiple undesirable side effects. The following table lists issues and their potential impact on daily usage.
+
+| Issue | Workaround | Description |
+| :---: | :--------: | :---------- |
+| **Unbootable System** | Set Mux to iGPU | Because of the unknown impact of the mux variable in EFI, the patches are sometimes partially applied, thus resulting in an unbootable system. Booting into single user mode and running the workaround re-sets the mux correctly and completes the patch. |
+| **Sleep** | None | Use of this patch on applicable macs disables proper sleep completely, including the loss of clamshell sleep modes, that is, the display will not turn off even if the laptop lid is closed. Uninstall recommended for on-the-go use. I cannot investigate further workarounds, but I believe some Hackintosh solutions to enable sleep on iGPU might be applicable. |
+| **dGPU Power Draw** | None | Discrete GPU draws power and emits heat even though it is disabled. I do not have an applicable machine to test further, but this script unfortunately does not include workarounds to address this issue. Perhaps some tweaking with power management and GPU control kexts could make a difference. |
 
 ## Troubleshooting
 Troubleshooting plays an important role in any kind of hack/patch. New OSes and hardware tend to bring with them new problems and challenges. The hardware chart aims to cover all variances of problems with eGPUs so far, but there can be some specific missed edge cases. The following is a list of additional resources rich in information:
