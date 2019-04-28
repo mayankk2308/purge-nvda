@@ -3,13 +3,14 @@
 # purge-nvda.sh
 # Author(s): Mayank Kumar (mayankk2308, github.com / mac_editor, egpu.io)
 # License: Specified in LICENSE.md.
-# Version: 3.0.4
+# Version: 3.0.5
 
 # ----- COMMAND LINE ARGS
 
 # Setup command args
 SCRIPT="${BASH_SOURCE}"
-OPTION=""
+OPTION="${1}"
+ADDITIONAL_OPT="${2}"
 LATEST_SCRIPT_INFO=""
 LATEST_RELEASE_DWLD=""
 
@@ -26,7 +27,7 @@ BIN_CALL=0
 SCRIPT_FILE=""
 
 # Script version
-SCRIPT_MAJOR_VER="3" && SCRIPT_MINOR_VER="0" && SCRIPT_PATCH_VER="4"
+SCRIPT_MAJOR_VER="3" && SCRIPT_MINOR_VER="0" && SCRIPT_PATCH_VER="5"
 SCRIPT_VER="${SCRIPT_MAJOR_VER}.${SCRIPT_MINOR_VER}.${SCRIPT_PATCH_VER}"
 
 # User input
@@ -73,6 +74,9 @@ ORIGINAL_PCI_MATCH_VALUE="0x000010de&0x0000ffff"
 # 0x1b0010de 0x1b0610de 0x1b3010de 0x1b3810de 0x1b3810de 0x1b8010de 0x1b8110de 0x1b8410de
 # 0x1bb010de 0x1bb310de 0x1c0210de 0x1c0310de 0x1c8110de 0x1c8210de 0x1d0110de
 MODERN_NV_GPU_DEVICE_IDS="0x100010de&0xf000ffff"
+
+NO_RB=0
+NO_ST=0
 
 # ----- SCRIPT SOFTWARE UPDATE SYSTEM
 
@@ -122,8 +126,8 @@ fetch_latest_release() {
 
 # Check caller
 validate_caller() {
-  [[ "$1" == "sh" && ! "$2" ]] && echo -e "\n${BOLD}Cannot execute${NORMAL}.\nPlease see the README for instructions.\n" && exit $EXEC_ERR
-  [[ "$1" != "$SCRIPT" ]] && OPTION="$3" || OPTION="$2"
+  [[ "${1}" == "sh" && ! "${2}" ]] && echo -e "\n${BOLD}Cannot execute${NORMAL}.\nPlease see the README for instructions.\n" && exit $EXEC_ERR
+  [[ "$1" != "$SCRIPT" ]] && (OPTION="${3}" && ADDITIONAL_OPT="${4}") || (OPTION="${2}" && ADDITIONAL_OPT="${3}")
   [[ "$SCRIPT" == "$SCRIPT_BIN" || "$SCRIPT" == "purge-wrangler" ]] && BIN_CALL=1
 }
 
@@ -131,7 +135,7 @@ validate_caller() {
 elevate_privileges() {
   if [[ `id -u` != 0 ]]
   then
-    sudo "$SCRIPT" "$OPTION"
+    sudo "$SCRIPT" "${OPTION}" "${ADDITIONAL_OPT}"
     exit 0
   fi
 }
@@ -183,6 +187,7 @@ perform_sys_check() {
 
 # Fix kext permissions and rebuild kextcache
 sanitize_system() {
+  [[ ${NO_ST} == 1 ]] && return
   echo -e "${BOLD}Sanitizing system...${NORMAL}"
   chown -R root:wheel "${SYS_EXT}NVDAStartup.kext" "${TP_EXT}NVDAStartupWeb.kext" 1>/dev/null 2>&1
   chmod -R 755 "${SYS_EXT}NVDAStartup.kext" "${TP_EXT}NVDAStartupWeb.kext" 1>/dev/null 2>&1
@@ -275,6 +280,7 @@ first_time_setup() {
 
 # Prompt reboot
 prompt_reboot() {
+  [[ ${NO_RB} == 1 ]] && return
   read -n1 -p "${BOLD}Reboot now${NORMAL}? [Y/N]: " INPUT
   if [[ "${INPUT}" == "Y" ]]
   then
@@ -327,6 +333,12 @@ provide_menu_selection() {
   ask_menu
 }
 
+# Process supplemental args
+process_sup_args() {
+  [[ ${ADDITIONAL_OPT} == *"no-rb"* ]] && NO_RB=1
+  [[ ${ADDITIONAL_OPT} == *"no-st"* ]] && NO_ST=1
+}
+
 # Process user input
 process_args() {
   case "${1}" in
@@ -367,9 +379,9 @@ process_args() {
 
 # Primary execution routine
 begin() {
-  validate_caller "${1}" "${2}"
+  validate_caller "${1}" "${2}" "${3}"
   perform_sys_check
+  process_sup_args
   process_args "${2}"
 }
-
-begin "${0}" "${1}"
+begin "${0}" "${1}" "${2}"
