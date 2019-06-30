@@ -3,7 +3,7 @@
 # purge-nvda.sh
 # Author(s): Mayank Kumar (mayankk2308, github.com / mac_editor, egpu.io)
 # License: Specified in LICENSE.md.
-# Version: 3.0.5
+# Version: 3.0.6
 
 # ----- COMMAND LINE ARGS
 
@@ -27,7 +27,7 @@ BIN_CALL=0
 SCRIPT_FILE=""
 
 # Script version
-SCRIPT_MAJOR_VER="3" && SCRIPT_MINOR_VER="0" && SCRIPT_PATCH_VER="5"
+SCRIPT_MAJOR_VER="3" && SCRIPT_MINOR_VER="0" && SCRIPT_PATCH_VER="6"
 SCRIPT_VER="${SCRIPT_MAJOR_VER}.${SCRIPT_MINOR_VER}.${SCRIPT_PATCH_VER}"
 
 # User input
@@ -303,6 +303,7 @@ donate() {
 
 # Ask for main menu
 ask_menu() {
+  [[ ${NO_RB} == 1 ]] && return
   read -n1 -p "${BOLD}Back to menu?${NORMAL} [Y/N]: " INPUT
   echo
   [[ "${INPUT}" == "Y" ]] && clear && echo -e "\n>> ${BOLD}PurgeNVDA (${SCRIPT_VER})${NORMAL}" && perform_sys_check && provide_menu_selection && return
