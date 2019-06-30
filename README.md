@@ -81,7 +81,7 @@ After installing the script, all settings as described in [pre-requisites](https
 | Issue | Workaround | Description |
 | :---: | :--------: | :---------- |
 | **Unbootable System** | Set Mux to iGPU | Because of the unknown impact of the mux variable in EFI, the patches are sometimes partially applied, thus resulting in an unbootable system. Booting into single user mode and running the workaround re-sets the mux correctly and completes the patch. |
-| **Sleep** | None | Use of this patch on applicable macs disables proper sleep completely, including the loss of clamshell sleep modes, that is, the display will not turn off even if the laptop lid is closed. Uninstall recommended for on-the-go use. I cannot investigate further workarounds, but I believe some Hackintosh solutions to enable sleep on iGPU might be applicable. |
+| **Sleep & Brightness** | None | Use of this patch on applicable macs disables proper sleep and brightness controls completely, including the loss of clamshell sleep modes, that is, the display will not turn off even if the laptop lid is closed. Uninstall recommended for on-the-go use. I cannot investigate further workarounds, but I believe some Hackintosh solutions to enable sleep on iGPU might be applicable. |
 | **dGPU Power Draw** | None | Discrete GPU draws power and emits heat even though it is disabled. I do not have an applicable machine to test further, but this script unfortunately does not include workarounds to address this issue. Perhaps some tweaking with power management and GPU control kexts could make a difference. |
 
 ## Troubleshooting
