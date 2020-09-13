@@ -3,7 +3,7 @@
 # purge-nvda.sh
 # Author(s): Mayank Kumar (mayankk2308, github.com / mac_editor, egpu.io)
 # License: Specified in LICENSE.md.
-# Version: 3.0.7
+# Version: 3.0.8
 
 # ----- COMMAND LINE ARGS
 
@@ -27,7 +27,7 @@ BIN_CALL=0
 SCRIPT_FILE=""
 
 # Script version
-SCRIPT_MAJOR_VER="3" && SCRIPT_MINOR_VER="0" && SCRIPT_PATCH_VER="7"
+SCRIPT_MAJOR_VER="3" && SCRIPT_MINOR_VER="0" && SCRIPT_PATCH_VER="8"
 SCRIPT_VER="${SCRIPT_MAJOR_VER}.${SCRIPT_MINOR_VER}.${SCRIPT_PATCH_VER}"
 
 # User input
@@ -150,6 +150,7 @@ check_macos_version() {
   MACOS_LEAP_VER="$(echo -e "${MACOS_VER}" | cut -d '.' -f1)"
   MACOS_MAJOR_VER="$(echo -e "${MACOS_VER}" | cut -d '.' -f2)"
   MACOS_MINOR_VER="$(echo -e "${MACOS_VER}" | cut -d '.' -f3)"
+  [[ -z "${MACOS_MINOR_VER}" ]] && MACOS_MINOR_VER=0
   [[ ${MACOS_LEAP_VER} == "10" && ("${MACOS_MAJOR_VER}" < 13) || ("${MACOS_MAJOR_VER}" == 13 && "${MACOS_MINOR_VER}" < 4) ]] && echo -e "\n${BOLD}macOS 10.13.4 or later${NORMAL} required.\n" && exit $MACOS_VER_ERR
 }
 
